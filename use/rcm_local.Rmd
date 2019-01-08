@@ -1,0 +1,34 @@
+---
+title: "local RCM analysis"
+output: html_document
+---
+
+```{r, include=F}
+# setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+library("knitr")
+library("dplyr")
+library("knitr")
+library("tidyr")
+library("magrittr")
+library('researchcyclematrix')
+```
+
+```{r}
+rcm<-rcm_download(main_columns_only = F)
+rcm<-rcm[rcm_is_data_unit_item(rcm),]
+rcmissues<-rcm_check(rcm)
+rcmissues %>% data.frame(rcm[rcmissues$id,]) %>% kable
+
+rcm_issue_export_by_country<-function(rcmissues,dir="./"){
+  dir.create(dir,recursive = T)
+  rcmissues <- rcmissues %>%  split.data.frame(substr(rcmissues$rcid,1,3))
+  names(rcmissues)[names(rcmissues)==""]<-"unknown_country"
+  targets<-paste0(dir,"rcm_inconsistencies_",names(rcmissues),".csv")
+  for(i in 1:length(rcmissues)){
+    write.csv(rcmissues[[i]],file = targets[i])
+  }
+}
+
+
+
+```
