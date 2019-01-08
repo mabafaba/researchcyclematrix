@@ -124,7 +124,7 @@ rcm_change_value<-function(file.id,column,value){
 
 
 
-#' wrapper for google sheets api
+#' wrapper for google sheets api to change single value
 g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc",...){
   cell<-paste0(col,row)
   thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",cell,"?valueInputOption=USER_ENTERED")
@@ -135,6 +135,33 @@ g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIf
 }')
   )%>% print
 }
+
+#' wrapper for google sheets api to append a new row
+g_sheets_append_value<-function(value,spreadsheetId="1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8",...){
+  thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/","submissions!A1:E2:append","?valueInputOption=USER_ENTERED")
+  # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
+  httr::POST(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
+            body=
+
+# paste0('{
+#                         "values":[["',value,'"]]
+# }') %>% cat
+
+  paste0('{
+       "values":[[',paste0(paste0('"',value,'"'),collapse=","),']]
+}')
+
+
+  )%>% print
+  # POST https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{range}:append
+  # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
+  # https://docs.google.com/spreadsheets/d/1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8/edit#gid=0
+}
+
+
+
+
+
 
 
 
