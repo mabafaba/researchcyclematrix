@@ -137,7 +137,7 @@ g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIf
 }
 
 #' wrapper for google sheets api to append a new row
-g_sheets_append_value<-function(value,spreadsheetId="1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8",...){
+g_sheets_append_row<-function(value,spreadsheetId="1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8",...){
   thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/","submissions!A1:E2:append","?valueInputOption=USER_ENTERED")
   # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
   httr::POST(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
