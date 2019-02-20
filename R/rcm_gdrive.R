@@ -102,6 +102,17 @@ rcm_gdrive_links<-function(rcm){
 
 
 
+#' set an item's status to "with HQ" on google drive
+#' @param file.id the items file id name as a string
+#' @export
+rcm_set_to_withHQ<-function (file.id)
+{
+  print(file.id)
+  rcm_change_value(file.id, column = "V", value = "with HQ (api_state)")
+}
+
+
+
 #' set an item's status to "validated" on google drive
 #' @param file.id the items file id name as a string
 #' @export
