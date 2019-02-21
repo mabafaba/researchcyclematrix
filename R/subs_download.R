@@ -28,7 +28,7 @@ subs_download<-function(){
   subs$in.country.deadline<-lubridate::dmy(subs$in.country.deadline)
   subs$time.since.submission<-(lubridate::as_datetime(Sys.time())-subs$submission.datetime)
   subs$days.since.submission<-as.numeric(subs$time.since.submission,"days")
-
+  subs<-subs[,!is.na(colnames(subs))] %>% as_tibble
   return(subs)
   }
 
@@ -53,10 +53,15 @@ subs_status<-function(subs,rcm){
 #' @value a data.frame listing which were / were not updated
 rcm_update_from_subs<-function(subs,rcm){
   subs$status<-subs_status(subs,rcm)
-  ignore<-sapply(c("with HQ","validated","not found in RCM"),grepl,x=subs$status)
+  ignore<-sapply(c("with HQ","validated","not found in RCM"),grepl,x=subs$status,simplify = F) %>% as.data.frame(stringsAsFactors=F)
   ignore<-apply(ignore,1,any)
 
-  ids_to_update<-subs$file.id[!ignore]
+  should_update<-sapply(c("not received","delayed","expected"),grepl,x=subs$status,simplify = F) %>% as.data.frame
+  should_update$rcm_status_empty <- is.na(subs$status)
+  should_update$rcm_status_empty[subs$status==""]<-TRUE
+  should_update<-apply(should_update,1,any)
+
+  ids_to_update<-subs$file.id[should_update & !ignore]
   ids_to_update<-unique(ids_to_update)
   ids_to_update<-ids_to_update[!is.na(ids_to_update)]
   ids_to_update<-ids_to_update[ids_to_update!=""]

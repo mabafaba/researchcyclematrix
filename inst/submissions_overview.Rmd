@@ -1,0 +1,30 @@
+---
+title: "submissions overview"
+author: "Martin Barner"
+date: "20 February 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("researchcyclematrix")
+library("knitr")
+rcm<-rcm_download(gdrive_links = F,include_validated = T)
+subs<-subs_download()
+subs[["days.until.deadline"]]<-as.numeric(subs$in.country.deadline-Sys.Date())
+subs[["days.with.data.unit"]]<-lubridate::as_date(Sys.Date())-(lubridate::as_date(subs$submission.datetime))
+```
+
+
+## Validate next
+```{r,message=FALSE,echo=FALSE,error=FALSE,warning=FALSE,results='asis'}
+
+subs %>% filter(!file.id.new) %>% select("# days to deadline"=days.until.deadline,"# days with HQ"=days.with.data.unit,emergency,rcid,file.id,email,"file id requested to add" = new.file.id) %>% kable
+
+```
+
+```{r,message=FALSE,echo=FALSE,error=FALSE,warning=FALSE,results='asis'}
+
+subs %>% filter(!file.id.new) %>% select("# days to deadline"=days.until.deadline,"# days with HQ"=days.with.data.unit,emergency,rcid,file.id,email,"file id requested to add" = new.file.id) %>% kable
+
+```
