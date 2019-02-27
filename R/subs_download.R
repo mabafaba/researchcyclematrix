@@ -32,7 +32,18 @@ subs_download<-function(){
   return(subs)
   }
 
-
+#' find submission rows in the research cyclce matrix
+#' @param subs the submissions from subs_download()
+#' @param rcm the research cycle matrix from rcm_download()
+#' @return a vector with row indices
+#' @examples
+#' # get the matching rcm rows:
+#' rcm<-rcm_download()
+#' subs<-subs_download()
+#' subs_in_rcm_indices<-subs_rcm_rows(subs,rcm)
+#' # subset rcm
+#' rcm[subs_in_rcm_indices,]
+#' @export
 subs_rcm_rows<-function(subs,rcm){
   match(subs$file.id,rcm$file.id)
 }
