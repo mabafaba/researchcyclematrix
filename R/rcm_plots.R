@@ -108,6 +108,7 @@ rcm_gant<-function(rcm){
 #' plot validation timeline
 #' @param rcm the RCM as given by rcm_download()
 #' @return ggplot object
+#' @export
 validation_timeline<-function(rcm){
   rcm$status[!grepl("HQ|validated|field|partner|received",rcm$status)]<-"other"
   ggplot(rcm)+geom_histogram(aes(date.hqsubmission.actual,fill=status),alpha=0.7,binwidth=1)+

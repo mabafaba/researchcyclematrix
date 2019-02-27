@@ -2,6 +2,7 @@
 
 export(date_arrived)
 export(hq_focal_point)
+export(rcm_add_validation_button)
 export(rcm_check)
 export(rcm_days_with_hq)
 export(rcm_deadline_status)
@@ -31,3 +32,4 @@ export(status_with_hq)
 export(subs_download)
 export(subs_rcm_rows)
 export(subs_with_new_id)
+export(validation_timeline)

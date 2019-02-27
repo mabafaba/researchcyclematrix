@@ -1,3 +1,7 @@
+#' add validation button html to rcm
+#' @param rcm
+#' @return rcm with button link
+#' @export
 rcm_add_validation_button<-function(rcm){
   click_to_validate<-shinyInput(actionButton, nrow(rcm), paste0('valbutton_',rcm$file.id), label = "validate"
                                 , onclick = 'Shiny.onInputChange(\"file_id_validated\",  this.id)' ,
