@@ -1,0 +1,41 @@
+---
+title: "rcm requested fixes"
+author: "Martin Barner"
+date: "25 February 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+  library("researchcyclematrix")
+  rcm<-rcm_download()
+  subs<-subs_download()
+  inc<-rcm_check(rcm)
+  inc$fatal<-inc$issue=="file-id-name not unique"
+
+
+
+```
+
+## Fatal inconsistencies
+
+```{r}
+tibble(`non unique uuids (data unit only)`=inc[inc$unit=="data" & inc$fatal,c("file id")]) %>%  kable
+
+```
+```{r}
+tibble(`non unique uuids (not data unit)`=inc[inc$unit!="data" & inc$fatal,c("file id")]) %>%  kable
+
+```
+
+
+## Secondary inconsistencies
+
+
+```{r}
+
+inc[!inc$fatal,c("file id", "issue","comment")] %>% kable
+
+```
+

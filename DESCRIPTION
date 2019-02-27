@@ -17,6 +17,6 @@ Depends:
     ggplot2,
     googlesheets,
     httr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Imports: 
     lubridate
