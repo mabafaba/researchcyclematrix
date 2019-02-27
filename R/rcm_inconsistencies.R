@@ -42,7 +42,6 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
 
 
 #' applies an issue checking function to the RCM
-#'
 rcm_find_issue<-function(rcm,get_issue_ids_fun,issue_name){
   id=get_issue_ids_fun(rcm)
   if(length(id)>0){

@@ -48,7 +48,8 @@ subs_rcm_rows<-function(subs,rcm){
   match(subs$file.id,rcm$file.id)
 }
 
-
+#' Status of subs (asfound in rcm)
+#' @export
 subs_status<-function(subs,rcm){
   row_indices<-subs_rcm_rows(subs,rcm)
   found<-!is.na(row_indices)
@@ -62,6 +63,7 @@ subs_status<-function(subs,rcm){
 #' @param subs the submissions as received from subs_download()
 #' @param rcm the RCM as received by rcm_download()
 #' @return a data.frame listing which were / were not updated
+#' @export
 rcm_update_from_subs<-function(subs,rcm){
   subs$status<-subs_status(subs,rcm)
   ignore<-sapply(c("with HQ","validated","not found in RCM"),grepl,x=subs$status,simplify = F) %>% as.data.frame(stringsAsFactors=F)
