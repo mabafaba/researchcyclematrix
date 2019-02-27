@@ -8,6 +8,8 @@ rcm_set_submission_date(file.id, date)
 }
 \arguments{
 \item{file.id}{the file id of the item to change}
+
+\item{date}{the date to set it to. Must be of class "POSIXct".}
 }
 \value{
 returns nothing important

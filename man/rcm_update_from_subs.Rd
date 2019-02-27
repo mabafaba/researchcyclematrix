@@ -11,6 +11,9 @@ rcm_update_from_subs(subs, rcm)
 
 \item{rcm}{the RCM as received by rcm_download()}
 }
+\value{
+a data.frame listing which were / were not updated
+}
 \description{
 Update RCM status based on form validation submissions
 }

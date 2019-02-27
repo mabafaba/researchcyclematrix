@@ -1,5 +1,5 @@
 #' who is the focal point for the rcid?
-#' @rcid a vector of research cycle ids
+#' @param rcid a vector of research cycle ids
 #' @return a vector of surnames of the HQ data unit focal point for the research cycle
 #' @export
 hq_focal_point<-function(rcid){
@@ -31,12 +31,12 @@ hq_focal_point<-function(rcid){
       "UKR","Martin",
       "YEM","Martin"
     )
-    
+
     ,ncol = 2,byrow = T
   )
-  
+
   colnames(focalpointlist)<-c("country","fp")
-  
+
   country<-rcid %>% substr(1,3)
   focalpointlist[match(country,focalpointlist[,"country"]),"fp"]
 }

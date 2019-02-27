@@ -6,6 +6,9 @@
 \usage{
 rcm_status_cols()
 }
+\value{
+vector with six colour hexcodes
+}
 \description{
 Colours for standard item stati
 }

@@ -9,6 +9,9 @@ rcm_gant(rcm)
 \arguments{
 \item{rcm}{the research cycle matrix from rcm_download(raw=F)}
 }
+\value{
+ggplot item
+}
 \description{
 Gant chart of all RCM items
 }

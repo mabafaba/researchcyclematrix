@@ -6,6 +6,9 @@
 \usage{
 hq_focal_point(rcid)
 }
+\arguments{
+\item{rcid}{a vector of research cycle ids}
+}
 \value{
 a vector of surnames of the HQ data unit focal point for the research cycle
 }

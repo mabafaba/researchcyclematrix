@@ -9,6 +9,9 @@ validation_timeline(rcm)
 \arguments{
 \item{rcm}{the RCM as given by rcm_download()}
 }
+\value{
+ggplot object
+}
 \description{
 plot validation timeline
 }
