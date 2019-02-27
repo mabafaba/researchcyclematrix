@@ -1,7 +1,7 @@
 
 #' standardising columns
 #'
-#' Regexing messy values into predefined categories and renames them. Applied by default in \link{\code{rcm_download}}
+#' Regexing messy values into predefined categories and renames them. Applied by default in `rcm_download()`
 #' @export
 rcm_standardised_columns<-function(rcm){
 
