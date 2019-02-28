@@ -3,7 +3,7 @@
 #' @return a data frame with all submissions
 #' @export
 subs_download<-function(){
-  print("downloading submissions..")
+
   subs<-read.csv("https://docs.google.com/spreadsheets/d/1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8/gviz/tq?tqx=out:csv&sheet=submissions",
                 stringsAsFactors = F)
   colnames(subs)<- c("submission.datetime",
@@ -29,6 +29,26 @@ subs_download<-function(){
   subs$time.since.submission<-(lubridate::as_datetime(Sys.time())-subs$submission.datetime)
   subs$days.since.submission<-as.numeric(subs$time.since.submission,"days")
   subs<-subs[,!is.na(colnames(subs))] %>% as_tibble
+
+  multiids<-subs
+  multiids$rows<-1:nrow(multiids)
+
+  ids_split<-multiids$file.id %>% strsplit("[[:space:]]_and id_[[:space:]]")
+  ids_split[(sapply(ids_split,length)==0)]<-""
+  multiids$ids_num<-sapply(ids_split,length)
+  multiids$comment[multiids$ids_num>1]<-paste0(multiids$comment[multiids$ids_num>1],
+                                               " _[[originally submitted ",multiids$ids_num[multiids$ids_num>1],
+                                               " IDs at once:: ",
+                                               multiids$file.id[multiids$ids_num>1])
+
+  replications<-apply(multiids,1,function(x){rep(x["rows"],x["ids_num"])}) %>% unlist %>% as.numeric
+
+  replicated<-multiids[replications,]
+  replicated$file.id<-unlist(ids_split)
+  replicated$rows<-NULL
+  replicated$ids_num<-NULL
+  subs<-replicated
+
   return(subs)
   }
 

@@ -20,4 +20,5 @@ Depends:
     magrittr
 RoxygenNote: 6.1.1
 Imports: 
-    lubridate
+    lubridate,
+    researchcyclematrix
