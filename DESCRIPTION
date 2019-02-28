@@ -16,7 +16,8 @@ Depends:
     knitr,
     ggplot2,
     googlesheets,
-    httr
+    httr,
+    magrittr
 RoxygenNote: 6.1.1
 Imports: 
     lubridate

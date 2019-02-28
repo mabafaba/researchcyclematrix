@@ -63,7 +63,8 @@ rcm_standardised_columns<-function(rcm){
   rcm_renaming_findname<-function(x){
     grep(x,names(rcm),value=T)[1]
   }
-  rcm %>% rename(date.endcollection.planned = {rcm_renaming_findname("Data.Collection...Planned.date.of.completion")},
+  dplyr::rename( rcm,
+                 date.endcollection.planned = {rcm_renaming_findname("Data.Collection...Planned.date.of.completion")},
                  date.endcollection.actual = {rcm_renaming_findname("Data.collection...Actual.date.of.completion")},
                  date.hqsubmission.planned.first = {rcm_renaming_findname("File.submission.to.HQ...First.planned.date..of.last.file.if.several")},
                  date.hqsubmission.planned.latest = {rcm_renaming_findname("File.submission.to.HQ...Latest.planned.date..of.last.file.if.several")},
