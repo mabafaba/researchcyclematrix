@@ -17,7 +17,9 @@ Depends:
     ggplot2,
     googlesheets,
     httr,
-    magrittr
+    magrittr,
+    crayon
 RoxygenNote: 6.1.1
 Imports: 
-    lubridate
+    lubridate,
+    assertthat

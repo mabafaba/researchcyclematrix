@@ -107,7 +107,7 @@ rcm_gdrive_links<-function(rcm){
 #' @export
 rcm_set_to_withHQ<-function (file.id)
 {
-  print(file.id)
+  message(paste0("setting to 'with HQ': ",file.id))
   rcm_change_value(file.id, column = "V", value = "with HQ (api_state)")
 }
 
@@ -117,8 +117,9 @@ rcm_set_to_withHQ<-function (file.id)
 #' @param file.id the items file id name as a string
 #' @export
 rcm_set_to_validated<-function(file.id){
-  print(file.id)
-  rcm_change_value(file.id,column = "V",value = "validated (api_state)")
+  message(paste0("setting to 'validated': ",file.id))
+rcm_change_value(file.id,column = "V",value = "validated (api_state)")
+rcm_set_validation_date(file.id)
 }
 
 #' change a value on google drive based on the file.id
