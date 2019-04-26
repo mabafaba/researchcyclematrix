@@ -16,8 +16,11 @@ todo_create<-function(rcm,subs,who="."){
   rcm<-rcm[grepl("with HQ",rcm$status),]
   rcm<-rcm[grepl(who,rcm$hq_focal_point),]
   rcm<-rcm[!is.na(rcm$file.id),]
-  rcm %>% arrange(desc(submitter_emergency),in.country.deadline,date.hqsubmission.actual)
-}
+  todo<-rcm %>% arrange(desc(submitter_emergency),in.country.deadline,date.hqsubmission.actual)
+  class(todo)<-c("todo",class(todo))
+  message(paste0("unrecognised items (new file id): ", nrow(subs[subs$new.file.id,])))
+  invisible(todo)
+  }
 
 #' show next on todo list
 #' @param todo 'todo' list element (mix of rcm and subs; created with todo_download() )
@@ -43,7 +46,7 @@ todo_next<-function(todo,n=nrow(todo)){
     days_until_deadline<-todorow[1,"in.country.deadline"]-Sys.Date()
 
     days_since_submission<-Sys.Date()-todorow[1,"date.hqsubmission.actual"]
-    regular_style<-function(x){crayon::italic(crayon::black(x))}
+
     deadline_passed<-days_until_deadline<0
 
     if(is.na(days_until_deadline)){days_until_deadline<-"(?)"}
@@ -67,6 +70,17 @@ todo_next<-function(todo,n=nrow(todo)){
 
   return(invisible(todo))
 }
+
+
+
+print.todo<-todo_next
+
+
+
+
+
+
+regular_style<-function(x){crayon::italic(crayon::black(x))}
 
 logo<-function(){
   return("                    ___                         ___     \n     _____         /\\  \\                       /\\  \\    \n    /::\\  \\       /::\\  \\         ___         /::\\  \\   \n   /:/\\:\\  \\     /:/\\:\\  \\       /\\__\\       /:/\\:\\  \\  \n  /:/  \\:\\__\\   /:/ /::\\  \\     /:/  /      /:/ /::\\  \\ \n /:/__/ \\:|__| /:/_/:/\\:\\__\\   /:/__/      /:/_/:/\\:\\__\\\n \\:\\  \\ /:/  / \\:\\/:/  \\/__/  /::\\  \\      \\:\\/:/  \\/__/\n  \\:\\  /:/  /   \\::/__/      /:/\\:\\  \\      \\::/__/     \n   \\:\\/:/  /     \\:\\  \\      \\/__\\:\\  \\      \\:\\  \\     \n    \\::/  /       \\:\\__\\          \\:\\__\\      \\:\\__\\    \n     \\/__/         \\/__/           \\/__/       \\/__/    \n      ___           ___                                 \n     /\\  \\         /\\  \\                                \n     \\:\\  \\        \\:\\  \\       ___           ___       \n      \\:\\  \\        \\:\\  \\     /\\__\\         /\\__\\      \n  ___  \\:\\  \\   _____\\:\\  \\   /:/__/        /:/  /      \n /\\  \\  \\:\\__\\ /::::::::\\__\\ /::\\  \\       /:/__/       \n \\:\\  \\ /:/  / \\:\\~~\\~~\\/__/ \\/\\:\\  \\__   /::\\  \\       \n  \\:\\  /:/  /   \\:\\  \\        ~~\\:\\/\\__\\ /:/\\:\\  \\      \n   \\:\\/:/  /     \\:\\  \\          \\::/  / \\/__\\:\\  \\     \n    \\::/  /       \\:\\__\\         /:/  /       \\:\\__\\    \n     \\/__/         \\/__/         \\/__/         \\/__/    \n      ___                       ___           ___       \n     /\\  \\                     /\\  \\         /\\__\\      \n    _\\:\\  \\       ___          \\:\\  \\       /:/ _/_     \n   /\\ \\:\\  \\     /\\__\\          \\:\\  \\     /:/ /\\  \\    \n  _\\:\\ \\:\\  \\   /:/__/      _____\\:\\  \\   /:/ /::\\  \\   \n /\\ \\:\\ \\:\\__\\ /::\\  \\     /::::::::\\__\\ /:/_/:/\\:\\__\\  \n \\:\\ \\:\\/:/  / \\/\\:\\  \\__  \\:\\~~\\~~\\/__/ \\:\\/:/ /:/  /  \n  \\:\\ \\::/  /     \\:\\/\\__\\  \\:\\  \\        \\::/ /:/  /   \n   \\:\\/:/  /       \\::/  /   \\:\\  \\        \\/_/:/  /    \n    \\::/  /        /:/  /     \\:\\__\\         /:/  /     \n     \\/__/         \\/__/       \\/__/         \\/__/      ")
@@ -92,8 +106,8 @@ todo_validate_next<-function(todo){
 
 
   message(green("Congrats! One down!"))
-  message(cat(silver(paste0(nrow(todo)-1," items left on the list"))))
-  return(invisible(todo[-1,]))
+  todo_next(todo[-1,],1)
+    return(invisible(todo[-1,]))
 }
 
 #' Download 'todo' item list

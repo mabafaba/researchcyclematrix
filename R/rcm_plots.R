@@ -22,16 +22,17 @@ rcm_status_cols<-function(){
 #' @return ggplot item
 #' @export
 rcm_gant<-function(rcm){
+
   rcm$status[!grepl("HQ|validated|field|partner",rcm$status)]<-"other"
   rcm$status<-as.factor(rcm$status)
   rcm$date.min<-NULL
   rcm$date.max<-NULL
   rcm$date.min<-apply(rcm[,grep("^date\\.",names(rcm))],1,function(x){format.Date(min(as.Date(x,format="%Y-%m-%d"),na.rm = T),format="%Y-%m-%d")})
-
   rcm$date.min <-as.Date(rcm$date.min,format="%Y-%m-%d")
   rcm$date.max<-apply(rcm[,grep("^date\\.",names(rcm))],1,function(x){format.Date(max(as.Date(x,format="%Y-%m-%d"),na.rm = T),format="%Y-%m-%d")})
   rcm$date.max <-as.Date(rcm$date.max,format="%Y-%m-%d")
-  rcm$date.minormax<-ifelse(is.na(rcm$date.min),rcm$date.max,rcm$date.min)
+
+  rcm$date.minormax<-ifelse(is.na(rcm$date.min),rcm$date.max,rcm$date.min) %>% (lubridate::as_date)
   rcm$date_style_status<-NA
   rcm$date_style_status[rcm$status=="validated"]<-"date.validated"
   rcm$date_style_status[rcm$status=="1 not received "]<-"date.hqsubmission.planned.latest"
@@ -46,7 +47,6 @@ rcm_gant<-function(rcm){
                                                        "date.hqsubmission.planned.first",
                                                        "date.hqsubmission.planned.latest",
                                                        "date.validated")]))})
-
   rcm %>% gather("datetype","date",
                  date.hqsubmission.actual,
                  date.endcollection.planned,
@@ -54,7 +54,6 @@ rcm_gant<-function(rcm){
                  date.hqsubmission.planned.first,
                  date.hqsubmission.planned.latest,
                  date.validated) -> rcm_dateslong
-
   rcm_dateslong$datetype<-factor(rcm_dateslong$datetype,levels = c("date.endcollection.planned"   ,
                                                                    "date.endcollection.actual",
                                                                    "date.hqsubmission.planned.first",
@@ -63,16 +62,17 @@ rcm_gant<-function(rcm){
                                                                    "date.validated",ordered=T)
   )
   rcm_dateslong$date.minormax[is.na(rcm_dateslong$date.minormax)] <- (min(rcm_dateslong$date.min,na.rm=T))-1
-
-
+  rcm_dateslong$date <- sapply(rcm_dateslong$date,lubridate::as_date)
+  rcm_dateslong$date<-lubridate::as_date(rcm_dateslong$date)
+  # rcm_dateslong %>% sapply(class) %>% kable
   ggplot(rcm)+
     geom_point(data = rcm_dateslong,
                aes(x=date, y=reorder(file.id,as.numeric(date.minormax)),colour=datetype))+
 
-    geom_segment(data=rcm,mapping = aes(y=reorder(file.id,as.numeric(date.minormax),),yend=file.id,
-                                        x=rcm$date.min,xend=date.max,
-                                        colour=date_style_status),
-                 lwd=0.5)+
+    # geom_segment(data=rcm,mapping = aes(y=reorder(file.id,as.numeric(date.minormax),),yend=file.id,
+    #                                     x=rcm$date.min,xend=date.max,
+    #                                     colour=date_style_status),
+    #              lwd=0.5)+
 
     geom_point(data = rcm_dateslong, aes(x=date, y=reorder(file.id,as.numeric(date.minormax)),colour=datetype))+
     scale_colour_manual(name="",values=c("date.endcollection.planned"="#ACACAD"   ,
@@ -88,20 +88,23 @@ rcm_gant<-function(rcm){
                                                                               "validation")
     )+scale_y_discrete(labels=function(x){strtrim(x,60)})+
 
-    # xlim(as.Date(c("2018-01-01","2019-01-01")))+
-    # geom_point(aes(x=date.hqsubmission.planned.first))+
-    theme(panel.background = element_blank(),
-          panel.grid.major = element_line(colour="#CCCCCC", size=0.05),
-          # panel.grid.major = element_blank(),
-          panel.grid.minor=element_blank(),
-          axis.text.y= element_text(size = 9))+theme(legend.position = "top")+labs(x="date",y="file id")
+     # theme(panel.background = element_blank(),
+     #      panel.grid.major = element_line(colour="#CCCCCC", size=0.05),
+     #      # panel.grid.major = element_blank(),
+     #      panel.grid.minor=element_blank(),
+     #      axis.text.y= element_text(size = 9))+theme(legend.position = "top")+labs(x="date",y="file id")
 
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(colour="#CCCCCC", size=0.05),
+        # panel.grid.major = element_blank(),
+        panel.grid.minor=element_blank(),
+        axis.text.y= element_text(size = 1),axis.text.x= element_text(size = 1,angle = 90,vjust = 0))+theme(legend.position = "top")+labs(x="date",y="file id")+
+    geom_vline(xintercept = Sys.Date(),col="black",lwd=1)+scale_x_date()
 
 
 
 
 }
-
 
 
 
