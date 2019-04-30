@@ -22,4 +22,5 @@ Depends:
 RoxygenNote: 6.1.1
 Imports: 
     lubridate,
-    assertthat
+    assertthat,
+    jsonlite

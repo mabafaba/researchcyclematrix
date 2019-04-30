@@ -138,14 +138,18 @@ rcm_change_value<-function(file.id,column,value){
 
 #' wrapper for google sheets api to change single value
 g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc",...){
+  if(spreadsheetId!="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc"){stop("g_sheets_put implemented only for one specific spreadsheet. for other spreadsheets would overwrite column AR")}
   cell<-paste0(col,row)
   thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",cell,"?valueInputOption=USER_ENTERED")
   g_sheets_update_index()
-  httr::PUT(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
+  server_response <- httr::PUT(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
             body=paste0('{
                         "values":[["',value,'"]]
 }')
-  )%>% print
+  )
+  if(server_response$status_code==200){cat(crayon::silver(paste("successfully changed values in google sheet:",col," / ",row)))}
+  if(server_response$status_code!=200){stop((paste0("\nfailed to modify google sheet\n",paste0(col,row),"\n","value:\n",value,"\n\n","status code: ",server_response$status_code)))}
+
 }
 
 #' wrapper for google sheets api to append a new row
@@ -159,22 +163,13 @@ g_sheets_append_row<-function(value,spreadsheetId="1iNt__-uMMBTbLEsJkiIXglPJ4GK-
 #                         "values":[["',value,'"]]
 # }') %>% cat
 
-  paste0('{
-       "values":[[',paste0(paste0('"',value,'"'),collapse=","),']]
-}')
-
+jsonlite::toJSON(list(values=t(as.matrix(value))))
 
   )%>% print
   # POST https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{range}:append
   # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
   # https://docs.google.com/spreadsheets/d/1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8/edit#gid=0
 }
-
-
-
-
-
-
 
 
 #' fills a column on google drive with incremental indices to ensure row matching works as expected
