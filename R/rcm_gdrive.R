@@ -138,7 +138,7 @@ rcm_change_value<-function(file.id,column,value){
 
 #' wrapper for google sheets api to change single value
 g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc",...){
-  if(spreadsheetId!="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc"){stop("g_sheets_put implemented only for one specific spreadsheet. for other spreadsheets would overwrite column AR")}
+  if(spreadsheetId!="1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk"){stop("g_sheets_put implemented only for one specific spreadsheet. for other spreadsheets would overwrite column AR")}
   cell<-paste0(col,row)
   thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",cell,"?valueInputOption=USER_ENTERED")
   g_sheets_update_index()
