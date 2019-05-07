@@ -4,7 +4,7 @@
 \alias{todo_validate_next}
 \title{set the top item in the todo list to validated on the RCM}
 \usage{
-todo_validate_next(todo)
+todo_validate_next(todo, hours_worked = NA)
 }
 \arguments{
 \item{todo}{'todo' list element (mix of rcm and subs; created with todo_download() )}

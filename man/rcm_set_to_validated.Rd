@@ -4,10 +4,12 @@
 \alias{rcm_set_to_validated}
 \title{set an item's status to "validated" on google drive}
 \usage{
-rcm_set_to_validated(file.id)
+rcm_set_to_validated(file.id, hours_worked)
 }
 \arguments{
 \item{file.id}{the items file id name as a string}
+
+\item{hours_worked}{time spent on the validation in hours; must be numeric or NA}
 }
 \description{
 set an item's status to "validated" on google drive
