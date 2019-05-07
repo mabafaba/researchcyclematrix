@@ -6,17 +6,27 @@
 #' @seealso todo_download()
 #' @export
 todo_create<-function(rcm,subs,who="."){
+  delayed<-rcm_delayed(rcm)
+
+  delayed$submitter_comment<- paste(Sys.Date() - delayed$date.hqsubmission.planned.latest, "days delayed")
+  delayed$in.country.deadline<-NA
+  delayed$submitter_email<-NA
+  delayed$submitter_emergency<-NA
+  delayed$status<-"delayed"
   rcm_rows_from_subs<-match(rcm$file.id,subs$file.id)
   rcm$submitter_comment<-subs$comment[rcm_rows_from_subs]
   rcm$submitter_email<-subs$email[rcm_rows_from_subs]
   rcm$submitter_emergency<-subs$emergency[rcm_rows_from_subs]
   rcm$in.country.deadline<-subs$in.country.deadline[rcm_rows_from_subs]
+  rcm<-rbind(rcm, delayed)
+
   rcm$hq_focal_point<-hq_focal_point(rcm$rcid)
   rcm$hq_focal_point[rcm$unit!="data"]<-NA
-  rcm<-rcm[grepl("with HQ",rcm$status),]
+  rcm<-rcm[grepl("with HQ|delayed",rcm$status),]
   rcm<-rcm[grepl(who,rcm$hq_focal_point),]
   rcm<-rcm[!is.na(rcm$file.id),]
-  todo<-rcm %>% arrange(desc(submitter_emergency),in.country.deadline,date.hqsubmission.actual)
+
+  todo<-rcm %>% arrange(status,desc(submitter_emergency),in.country.deadline,date.hqsubmission.actual)
   class(todo)<-c("todo",class(todo))
   message(paste0("unrecognised items (new file id): ", nrow(subs[subs$new.file.id,])))
   invisible(todo)
@@ -29,6 +39,8 @@ todo_create<-function(rcm,subs,who="."){
 #' @return the todo item (silently)
 #' @export
 todo_next<-function(todo,n=nrow(todo)){
+
+  todo <- todo %>% arrange(status)
 
   if(nrow(todo)==0){
     message((crayon::green(logo())))
@@ -48,7 +60,19 @@ todo_next<-function(todo,n=nrow(todo)){
     days_since_submission<-Sys.Date()-todorow[1,"date.hqsubmission.actual"]
 
     deadline_passed<-days_until_deadline<0
+    if(todorow["status"]=="delayed"){
+      cat(paste((crayon::silver(todorow["rcid"])),
+                    crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))," "))
 
+      cat((paste0(paste0(crayon::red(paste(Sys.Date() - todorow[1,"date.hqsubmission.planned.latest"],"days delayed")),
+                         "\n\n",
+                         collapse="\n"))))
+    if(!(todorow["comment"] %in% c(NA,""," "))){
+      regular_style(todorow["comment"])
+    }
+
+      return(invisible(NULL))
+    }
     if(is.na(days_until_deadline)){days_until_deadline<-"(?)"}
     if(is.na(deadline_passed)) deadline_passed<-FALSE
 
@@ -59,21 +83,24 @@ todo_next<-function(todo,n=nrow(todo)){
     message(regular_style(paste0(bold(days_since_submission)," Days since submission")))
     message(regular_style(paste0(bold(days_until_deadline)," Days "," before deadline")))
     message("\n")
+    return(invisible(NULL))
   }
   for(i in n:1){
     showone(todo[i,])
   }
   writeClipboard(todo[1,"file.id"])
   message(yellow("special effect: next file id already copied to clipboard!"))
-  message((silver(paste0(nrow(todo)," items on list"))))
+  message((silver(paste0(nrow(todo[todo$status!="delayed",])," items on list"))))
+  message((silver(paste0(nrow(todo[todo$status=="delayed",])," expected but not received"))))
+
   message((green("you got this!")))
 
   return(invisible(todo))
 }
 
 
-
-print.todo<-todo_next
+#' @export
+print.todo <- todo_next
 
 
 
