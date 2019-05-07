@@ -115,11 +115,15 @@ rcm_set_to_withHQ<-function (file.id)
 
 #' set an item's status to "validated" on google drive
 #' @param file.id the items file id name as a string
+#' @param hours_worked time spent on the validation in hours; must be numeric or NA
 #' @export
-rcm_set_to_validated<-function(file.id){
+rcm_set_to_validated<-function(file.id,hours_worked){
+  if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
+
   message(paste0("setting to 'validated': ",file.id))
-rcm_change_value(file.id,column = "V",value = "validated (api_state)")
-rcm_set_validation_date(file.id)
+  rcm_change_value(file.id,column = "V",value = "validated (api_state)")
+  rcm_set_validation_date(file.id)
+  rcm_set_hours_worked(file.id,hours_worked)
 }
 
 #' change a value on google drive based on the file.id

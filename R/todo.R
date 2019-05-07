@@ -119,7 +119,7 @@ logo<-function(){
 #' @details will prompt for confirmation (type 'y' in console and hit enter; everything else will abort)
 #' @return the todo item (silently), without the validated entry
 #' @export
-todo_validate_next<-function(todo){
+todo_validate_next<-function(todo,hours_worked=NA){
   file.id<-todo[1,"file.id"]
   message(paste0(crayon::cyan("set '"),crayon::magenta(file.id),cyan("' to validated (y/n)?")))
   confirm<-readline()
@@ -129,7 +129,7 @@ todo_validate_next<-function(todo){
 
   }
 
-  rcm_set_to_validated(file.id)
+  rcm_set_to_validated(file.id,hours_worked)
 
 
   message(green("Congrats! One down!"))

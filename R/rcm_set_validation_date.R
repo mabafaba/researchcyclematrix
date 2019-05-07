@@ -16,6 +16,7 @@ rcm_set_validation_date<-function(file.id,date=as.POSIXct(Sys.Date())){
 
   rcm_change_value(file.id,column = "X",value = date_text)
 
+
 }
 
 

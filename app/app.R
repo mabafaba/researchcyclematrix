@@ -131,7 +131,7 @@ server <- function(input, output,session) {
 
 
   observeEvent(input$file_id_validated, {
-    rcm_set_to_validated(gsub("^valbutton_","",input$file_id_validated))
+    rcm_set_to_validated(gsub("^valbutton_","",input$file_id_validated),hours_worked = NA)
     # print(input$file_id_validated)
   })
 
