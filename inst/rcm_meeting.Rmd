@@ -18,14 +18,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-## Fatal inconsistencies
+## Delayed items
 
 ```{r}
-tibble(`non unique uuids (data unit only)`=inc[inc$unit=="data" & inc$fatal,c("file id")]) %>%  kable
-
-```
-```{r}
-tibble(`non unique uuids (not data unit)`=inc[inc$unit!="data" & inc$fatal,c("file id")]) %>%  kable
+delayed
 
 ```
 
@@ -34,8 +30,6 @@ tibble(`non unique uuids (not data unit)`=inc[inc$unit!="data" & inc$fatal,c("fi
 
 
 ```{r}
-
-inc[!inc$fatal,c("file id", "issue","comment")] %>% kable
-
+print("asdf")
 ```
 

@@ -1,0 +1,149 @@
+---
+title: "Research Department Meeting Data Unit Overview"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(purrr)
+library(knitr)
+library(ggplot2)
+as_countrylist<-function(x){
+x$country<-substr(x$rcid,1,3)
+x_countrylist<-x %>% split.data.frame(x$country)  
+}
+
+rcm$has_comment<-!(rcm$comment %in% c("", " ", NA))
+rcm_cl<-as_countrylist(rcm)
+
+delayed$days_delayed<-Sys.Date()-delayed$date.hqsubmission.planned.latest
+delayed$country<-substr(delayed$rcid,1,3)
+delayed_cl<-as_countrylist(delayed)
+
+inconsistencies_cl<-as_countrylist(inconsistencies)
+
+
+
+
+countries<-c(names(rcm_cl),names(delayed_cl),names(inconsistencies_cl)) %>% unique %>% sort
+
+
+```
+
+```{r}
+cat("# SUMMARY")
+
+cat("### general delays:")
+
+ggplot2::ggplot(delayed,aes(x=days_delayed,y=country))+geom_jitter(height=0.2,width=7,alpha=0.5)+theme_minimal()+scale_x_continuous("days passed planned submission date")+theme(axis.text.y  = element_text(size=1))+geom_text(aes(label=file.id),hjust=0.5,angle=0,nudge_y=-0.5,size=2,check_overlap = T)
+# ggplot2::facet_grid(. ~ country)+coord_flip()
+
+cat("### general matrix inconsistencies:")
+
+inconsistent$country<-substr(inconsistent$rcid,1,3)
+ggplot(inconsistent,aes(x = country,fill=issue))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()
+
+
+
+cat("### general comments:")
+
+coms<-rcm[rcm$has_comment,]
+rcm$country<-substr(rcm$rcid,1,3)
+ggplot(rcm,aes(x = country,fill=has_comment))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()+scale_fill_discrete(name="has comments?",label=c(`FALSE`="no",`TRUE`="yes"))
+
+
+```
+
+
+```{r,results='asis'}
+  cat("# BY COUNTRY\n\n")
+
+for(country in countries){
+  
+  cat(paste("##",country,"\n\n"))
+  
+
+  cat(paste("### RCM inconsistencies","\n\n"))
+      if(is.null(inconsistencies_cl[[country]])){cat(crayon::silver("no known inconsistencies\n\n"))}else{
+
+  kable(inconsistencies_cl[[country]],format = "markdown") %>% print
+  
+}
+  cat(paste("### Delays","\n\n"))
+    if(is.null(delayed_cl[[country]])){cat(crayon::silver("no known delays\n\n"))}else{
+  
+      kable(delayed_cl[[country]] %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed),format = "markdown") %>% print
+    }
+
+  
+    cat(paste("### Comments","\n\n"))
+    
+    if(is.null(rcm_cl[[country]]) | !any(rcm_cl[[country]]$has_comment==T)){cat(crayon::silver("no comments\n\n"))}else{
+      
+    
+
+
+rcm_cl[[country]] %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% arrange(rcid) %>% kable(format = "markdown") %>% print
+      
+      
+    }
+
+  
+  
+}
+```
+
+
+```{r,results='asis'}
+
+  cat("# GLOBAL\n\n")
+
+
+  cat(paste("## RCM inconsistencies","\n\n"))
+      if(nrow(inconsistencies)==0){cat(crayon::silver("no known inconsistencies\n\n"))}else{
+  kable(inconsistencies,format = "markdown") %>% print
+  
+}
+  cat(paste("### Delays","\n\n"))
+    if(nrow(delayed)==0){cat(crayon::silver("no known delays\n\n"))}else{
+  
+      kable(delayed %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed),format = "markdown") %>% print
+    }
+
+  
+    cat(paste("### Comments","\n\n"))
+    
+    if((nrow(rcm)==0) | !any(rcm$has_comment==T)){cat(crayon::silver("no comments\n\n"))}else{
+      
+    rcm %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% arrange(rcid) %>% kable(format = "markdown") %>% print
+      
+      
+    }
+
+
+```
+
+
+
+```{r,results='asis'}
+cat('
+
+<style type="text/css">
+	
+h2{
+	background: #000000;
+	color: #FFFFFF;
+  
+}
+	
+h3{
+	background: #999999;
+	color: #FFFFFF;
+  
+}
+</style>')
+
+```

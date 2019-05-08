@@ -6,7 +6,7 @@
 #' @seealso todo_download()
 #' @export
 todo_create<-function(rcm,subs,who="."){
-  delayed<-rcm_delayed(rcm)
+  delayed<-todo_delayed(rcm)
 
   delayed$submitter_comment<- paste(Sys.Date() - delayed$date.hqsubmission.planned.latest, "days delayed")
   delayed$in.country.deadline<-NA

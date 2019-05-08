@@ -117,13 +117,15 @@ rcm_set_to_withHQ<-function (file.id)
 #' @param file.id the items file id name as a string
 #' @param hours_worked time spent on the validation in hours; must be numeric or NA
 #' @export
-rcm_set_to_validated<-function(file.id,hours_worked){
+rcm_set_to_validated<-function(file.id,hours_worked,comment){
   if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
 
   message(paste0("setting to 'validated': ",file.id))
   rcm_change_value(file.id,column = "V",value = "validated (api_state)")
   rcm_set_validation_date(file.id)
   rcm_set_hours_worked(file.id,hours_worked)
+  rcm_comment(file.id,comment,overwrite = T)
+
 }
 
 #' change a value on google drive based on the file.id
@@ -197,3 +199,131 @@ g_sheets_update_index<-function(col="AR",spreadsheetId="1wX5k3cETrCbnw4vpfY07eSz
 }
 
 }
+
+
+
+
+
+#' set an item's status to "validated" on google drive
+#' @param file.id the items file id name as a string
+#' @param comment the comment as a single character string
+#' @param overwrite if TRUE, will completely overwrite the current comment. Otherwise it will append the new comment to the existing one (with a date stamp)
+#' @export
+rcm_comment<-function(file.id,comment,overwrite=F){
+assertthat::assert_that(assertthat::is.string(comment))
+  message(paste0("commenting on: ",file.id))
+  if(!overwrite){
+  rcm<-researchcyclematrix::rcm_download(raw=T)
+  current_comment<-rcm$Comments[match(file.id,rcm$File.ID_Name)]
+  }else{
+    current_comment<-""
+  }
+  if(current_comment %in% c(""," ",NA)){current_comment<-NULL}else{
+    current_comment <- paste0(current_comment,"\n")
+  }
+  comment<-paste0(current_comment,format(Sys.Date(),"%d-%b-%y"),": ",comment)
+  researchcyclematrix:::rcm_change_value(file.id,column = "J",value = comment)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
