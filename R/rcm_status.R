@@ -27,7 +27,7 @@ status_with_field<-function(rcm){
   rcm$status %>% grepl("field",.)
 }
 
-#' how long has the item been with HQ?
+#' how long has each item been with HQ?
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return Date time difference vector
 #' @export
@@ -38,7 +38,7 @@ rcm_days_with_hq<-function(rcm){
   rcm$days.with.hq
 }
 
-#' is with field?
+#' get rcm items that have been with hq for a long time
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return a subset of the RCM: only rows that are with HQ; only basic information columns. Sorted by added column "days.with.hq"
 #' @export
@@ -53,7 +53,6 @@ rcm_longest_with_hq<-function(rcm,n=NULL,add.columns=c()){
 #' is a date today or older?
 #' @param date date(s) to check
 #' @return logical vector if date is today or in the passed
-#' @export
 date_arrived<-function(date){
   date<=Sys.Date()
 }

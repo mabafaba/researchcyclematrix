@@ -204,7 +204,7 @@ g_sheets_update_index<-function(col="AR",spreadsheetId="1wX5k3cETrCbnw4vpfY07eSz
 
 
 
-#' set an item's status to "validated" on google drive
+#' change an items comment on google drive
 #' @param file.id the items file id name as a string
 #' @param comment the comment as a single character string
 #' @param overwrite if TRUE, will completely overwrite the current comment. Otherwise it will append the new comment to the existing one (with a date stamp)
