@@ -74,7 +74,7 @@ delayed_or_no_date <- rbind(delayed_items,date_missing)
 
 # lets try all at once:
 
-researchcyclematrix:::g_sheets_append_row(delayed_or_no_date,spreadsheetId = "1fldR9_dx64otky6TvFMK29-pxUKrRUrpqdSzE8npVHA")
+researchcyclematrix:::g_sheets_append_row(t(delayed_or_no_date),spreadsheetId = "1fldR9_dx64otky6TvFMK29-pxUKrRUrpqdSzE8npVHA")
 
 
 # if that doesn't work revert to this:

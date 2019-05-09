@@ -53,7 +53,7 @@ country_status_markdown <- function(rcm,delayed,inconsistencies, path="./", file
 rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T){
 
 
-  if(is.null(rcm)){rcm<-rcm_download()}
+  if(is.null(rcm)){rcm<-rcm_download(include_validated=T)}
   if(is.null(subs)){subs<-subs_download()}
 
   if(update_rcm){

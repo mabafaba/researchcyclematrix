@@ -17,12 +17,18 @@ x_countrylist<-x %>% split.data.frame(x$country)
 }
 
 rcm$has_comment<-!(rcm$comment %in% c("", " ", NA))
+rcm$days_since_validation[grepl("validated",rcm$status)]<-
+  (Sys.Date()-lubridate::dmy(rcm$date.validated))[grepl("validated",rcm$status)]
+
+
 rcm_cl<-as_countrylist(rcm)
 
 delayed$days_delayed<-Sys.Date()-delayed$date.hqsubmission.planned.latest
 delayed$country<-substr(delayed$rcid,1,3)
 delayed_cl<-as_countrylist(delayed)
 
+recently_validated<-rcm %>% filter(rcm$days_since_validation<=14)
+recently_validated_cl<-as_countrylist(recently_validated)
 inconsistencies_cl<-as_countrylist(inconsistencies)
 
 
@@ -34,25 +40,48 @@ countries<-c(names(rcm_cl),names(delayed_cl),names(inconsistencies_cl)) %>% uniq
 ```
 
 ```{r,results='asis'}
-cat("# SUMMARY")
+cat("# SUMMARY\n\n")
 
-cat("\n\n### general delays:\n\n")
+cat("validated in the last two weeks: <b>",nrow(recently_validated),"</b><br>")
+cat("median days from submission to validation:<b>",median(lubridate::dmy(recently_validated$date.validated)-lubridate::ymd(recently_validated$date.hqsubmission.actual),na.rm = T),"</b><br>")
+cat("maximum days from submission to validation:<b>",max(lubridate::dmy(recently_validated$date.validated)-lubridate::ymd(recently_validated$date.hqsubmission.actual),na.rm = T),"</b><br>")
+
+cat("under review:<b>",length(grep("HQ|partner|field",rcm$status)),"</b><br>")
+cat("delayed:<b>",nrow(delayed),"</b><br>")
+cat("matrix inconsistencies:<b>",nrow(inconsistencies),"</b><br>")
+
+cat("\n\n### Validated in the last two weeks")
+
+recently_validated %>% select(rcid,file.id,comment,date.validated) %>% arrange(date.validated,rcid) %>%  kable(format = "markdown")
+
+
+cat("\n\n### With HQ / Under Review")
+
+rcm %>% filter(grepl("hq|partner|field",status,ignore.case = T)) %>%
+                 select(rcid,file.id,comment,date.hqsubmission.actual,status) %>%
+                 arrange(status,date.hqsubmission.actual,rcid) %>% 
+                 kable(format = "markdown")
+
+
+cat("\n\n### Delays\n\n")
 
 ggplot2::ggplot(delayed,aes(x=days_delayed,y=country))+geom_jitter(height=0.2,width=7,alpha=0.5)+theme_minimal()+scale_x_continuous("days passed planned submission date")+theme(axis.text.y  = element_text(size=1))+geom_text(aes(label=file.id),hjust=0.5,angle=0,nudge_y=-0.5,size=2,check_overlap = T)
 # ggplot2::facet_grid(. ~ country)+coord_flip()
 
-cat("\n\n### general matrix inconsistencies:\n\n")
+
+
+cat("\n\n### total number of Comments\n\n")
+
+coms<-rcm %>% filter(has_comment)
+rcm$country<-substr(rcm$rcid,1,3)
+ggplot(rcm,aes(x = country,fill=type))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()+scale_fill_discrete(name="type",label=c(`FALSE`="no",`TRUE`="yes"))
+
+cat("\n\n### RCM inconsistencies\n\n")
 
 inconsistencies$country<-substr(inconsistencies$rcid,1,3)
 ggplot(inconsistencies,aes(x = country,fill=issue))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()
 
 
-
-cat("\n\n### do we have comments?\n\n")
-
-coms<-rcm[rcm$has_comment,]
-rcm$country<-substr(rcm$rcid,1,3)
-ggplot(rcm,aes(x = country,fill=has_comment))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()+scale_fill_discrete(name="has comments?",label=c(`FALSE`="no",`TRUE`="yes"))
 
 
 ```
@@ -65,7 +94,27 @@ for(country in countries){
   
   cat(paste("##",country,"\n\n"))
   
+cat(paste("\n\n### Recently Validated (2 weeks)","\n\n"))
+      if(is.null(recently_validated_cl[[country]])){cat(crayon::silver("no items\n\n"))}else{
 
+  kable(recently_validated_cl[[country]] %>% select(rcid,file.id,comment,days_since_validation) %>% arrange(days_since_validation),format = "markdown") %>% print
+  
+}
+  
+cat(paste("\n\n### Under Review","\n\n"))
+
+      if(is.null(rcm_cl[[country]])){cat(crayon::silver("no items for this country\n\n"))}else{
+  under_review<-rcm_cl[[country]]
+under_review<-under_review[grepl("HQ|field|partner",under_review$status,ignore.case = T),,drop=F]
+
+if(nrow(under_review)==0){cat("no items under review")}
+
+under_review<-under_review %>% select(rcid,file.id,date.hqsubmission.actual) %>% arrange(lubridate::ymd(date.hqsubmission.actual))
+  kable(under_review,format = "markdown") %>% print
+  
+}
+  
+  
   cat(paste("\n\n### RCM inconsistencies","\n\n"))
       if(is.null(inconsistencies_cl[[country]])){cat(crayon::silver("no known inconsistencies\n\n"))}else{
 
