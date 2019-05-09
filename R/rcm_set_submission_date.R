@@ -2,7 +2,6 @@
 #' @param file.id the file id of the item to change
 #' @param date the date to set it to. Must be of class "POSIXct".
 #' @return returns nothing important
-#' @export
 rcm_set_submission_date<-function(file.id,date){
   # stop if input no good:
   if(!("POSIXct" %in% class(date))){

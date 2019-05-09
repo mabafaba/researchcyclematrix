@@ -2,7 +2,6 @@
 #' standardising columns
 #'
 #' Regexing messy values into predefined categories and renames them. Applied by default in `rcm_download()`
-#' @export
 rcm_standardised_columns<-function(rcm){
 
   # people keep changing the column headers on gdrive..:

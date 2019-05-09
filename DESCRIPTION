@@ -18,7 +18,10 @@ Depends:
     googlesheets,
     httr,
     magrittr,
-    crayon
+    crayon,
+    utils,
+    tidyr,
+    tibble
 RoxygenNote: 6.1.1
 Imports: 
     lubridate,

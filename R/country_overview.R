@@ -50,7 +50,7 @@ country_status_markdown <- function(rcm,delayed,inconsistencies, path="./", file
 #' @update_rcm logical: whether to update the rcm from the submissions sheet before producing the report. Slows it down a bit but hey at least your report is up to date afterwards. default is TRUE
 #' @return nothing interesting, but writes a html file into the working directory and opens it in the browser
 #' @export
-country_status <- function(rcm=NULL,subs=NULL,update_rcm = T){
+rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T){
 
 
   if(is.null(rcm)){rcm<-rcm_download()}

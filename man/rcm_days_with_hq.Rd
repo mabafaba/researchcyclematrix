@@ -2,7 +2,7 @@
 % Please edit documentation in R/rcm_status.R
 \name{rcm_days_with_hq}
 \alias{rcm_days_with_hq}
-\title{how long has the item been with HQ?}
+\title{how long has each item been with HQ?}
 \usage{
 rcm_days_with_hq(rcm)
 }
@@ -13,5 +13,5 @@ rcm_days_with_hq(rcm)
 Date time difference vector
 }
 \description{
-how long has the item been with HQ?
+how long has each item been with HQ?
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rcm_status.R
 \name{rcm_longest_with_hq}
 \alias{rcm_longest_with_hq}
-\title{is with field?}
+\title{get rcm items that have been with hq for a long time}
 \usage{
 rcm_longest_with_hq(rcm, n = NULL, add.columns = c())
 }
@@ -13,5 +13,5 @@ rcm_longest_with_hq(rcm, n = NULL, add.columns = c())
 a subset of the RCM: only rows that are with HQ; only basic information columns. Sorted by added column "days.with.hq"
 }
 \description{
-is with field?
+get rcm items that have been with hq for a long time
 }

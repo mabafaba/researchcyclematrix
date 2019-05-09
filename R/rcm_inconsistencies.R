@@ -68,7 +68,6 @@ rcm_issue$duplicated_file_id<-function(rcm){which(duplicated(rcm$file.id))}
 #' - analysis.missing ("exists" or "missing")
 #' - RCID (the research cycle ID)
 #'
-#' @export
 rcm_missing_data_unit_items<-function(rcm){
   rcm %>% split.data.frame(rcm$rcid) %>% lapply(function(x){
     has_data_line<- ifelse(any(grepl("data",x$type)),"exists","missing")

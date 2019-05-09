@@ -40,16 +40,49 @@ todo_delayed<-function(rcm,days_since_planned_submission=14){
 }
 
 
+rcm_date_missing <- function(rcm){
+
+  missing<- rcm %>% filter(unit=="data",
+                           is.na(lubridate::ymd(date.hqsubmission.planned.latest)),
+                           !grepl("validated|HQ|field|partner",status))
+
+  return(invisible(missing))
+}
+
+
+
 
 #' write delays to google sheet
 #' @param todo todo list (see ?todo_download)
 #' @seealso todo_delayed_browse()
 #' @export
-todo_delayed_to_google_sheet<-function(todo){
-  apply(rcm_delayed(todo),1,
-        function(x){
-          researchcyclematrix:::g_sheets_append_row(x,spreadsheetId = "1fldR9_dx64otky6TvFMK29-pxUKrRUrpqdSzE8npVHA")
-        })
+rcm_delayed_to_google_sheet<-function(rcm){
+ delayed_items<-todo_delayed(rcm) %>%
+    mutate(country=substr(rcid,1,3)) %>%
+    mutate("field.status"="to be submitted") %>%
+    select(country,rcid,file.id,date.hqsubmission.planned.latest,field.status) %>%
+      arrange((country),(rcid))
+
+  date_missing<-rcm_date_missing(rcm) %>%
+    mutate(country=substr(rcid,1,3)) %>%
+    mutate("field.status"="to be submitted") %>%
+    mutate(date.hqsubmission.planned.latest=NA) %>%
+    select(country,rcid,file.id,date.hqsubmission.planned.latest,field.status) %>%
+    arrange((country),(rcid))
+
+delayed_or_no_date <- rbind(delayed_items,date_missing)
+
+# lets try all at once:
+
+researchcyclematrix:::g_sheets_append_row(delayed_or_no_date,spreadsheetId = "1fldR9_dx64otky6TvFMK29-pxUKrRUrpqdSzE8npVHA")
+
+
+# if that doesn't work revert to this:
+  # apply(delayed_or_no_date %>% arrange(country),1,
+  #       function(x){
+  #         researchcyclematrix:::g_sheets_append_row(x,spreadsheetId = "1fldR9_dx64otky6TvFMK29-pxUKrRUrpqdSzE8npVHA")
+  #       })
+  todo_delayed_browse()
 }
 
 

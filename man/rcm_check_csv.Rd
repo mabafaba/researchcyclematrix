@@ -4,7 +4,7 @@
 \alias{rcm_check_csv}
 \title{write matrix issues to file for each HQ focal point}
 \usage{
-rcm_check_csv(rcm = NULL)
+rcm_check_csv(rcm = NULL, unit = "data")
 }
 \arguments{
 \item{rcm}{use rcm_download(gdrive_links=F). can be ommited (then downloading from gdrive)}

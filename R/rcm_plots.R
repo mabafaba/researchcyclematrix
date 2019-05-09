@@ -1,7 +1,6 @@
 
 #' Colours for standard item stati
 #' @return vector with six colour hexcodes
-#' @export
 rcm_status_cols<-function(){
   return(c("#fff1d3", # other
            "#fff1d3", # not received
@@ -20,7 +19,6 @@ rcm_status_cols<-function(){
 #' Gant chart of all RCM items
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return ggplot item
-#' @export
 rcm_gant<-function(rcm){
 
   rcm$status[!grepl("HQ|validated|field|partner",rcm$status)]<-"other"
@@ -111,7 +109,6 @@ rcm_gant<-function(rcm){
 #' plot validation timeline
 #' @param rcm the RCM as given by rcm_download()
 #' @return ggplot object
-#' @export
 validation_timeline<-function(rcm){
   rcm$status[!grepl("HQ|validated|field|partner|received",rcm$status)]<-"other"
   ggplot(rcm)+geom_histogram(aes(date.hqsubmission.actual,fill=status),alpha=0.7,binwidth=1)+

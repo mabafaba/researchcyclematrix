@@ -63,7 +63,6 @@ subs_download<-function(){
 #' subs_in_rcm_indices<-subs_rcm_rows(subs,rcm)
 #' # subset rcm
 #' rcm[subs_in_rcm_indices,]
-#' @export
 subs_rcm_rows<-function(subs,rcm){
   match(subs$file.id,rcm$file.id)
 }

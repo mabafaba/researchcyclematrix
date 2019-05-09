@@ -2,7 +2,7 @@
 % Please edit documentation in R/rcm_gdrive.R
 \name{rcm_comment}
 \alias{rcm_comment}
-\title{set an item's status to "validated" on google drive}
+\title{change an items comment on google drive}
 \usage{
 rcm_comment(file.id, comment, overwrite = F)
 }
@@ -14,5 +14,5 @@ rcm_comment(file.id, comment, overwrite = F)
 \item{overwrite}{if TRUE, will completely overwrite the current comment. Otherwise it will append the new comment to the existing one (with a date stamp)}
 }
 \description{
-set an item's status to "validated" on google drive
+change an items comment on google drive
 }

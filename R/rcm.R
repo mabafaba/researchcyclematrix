@@ -13,7 +13,6 @@
 #' sort RCM by priority
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return the research cycle matrix sorted by 1. milestone passed, 2. days with HQ
-#' @export
 rcm_sort_priority<-function(rcm){
 alpha<-rcm_passed_milestone(rcm) %>% as.numeric
 beta<-rcm_days_with_hq(rcm) %>% as.numeric

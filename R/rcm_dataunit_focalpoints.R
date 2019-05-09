@@ -1,7 +1,6 @@
 #' who is the focal point for the rcid?
 #' @param rcid a vector of research cycle ids
 #' @return a vector of surnames of the HQ data unit focal point for the research cycle
-#' @export
 hq_focal_point<-function(rcid){
   focalpointlist<-matrix(
     c(
