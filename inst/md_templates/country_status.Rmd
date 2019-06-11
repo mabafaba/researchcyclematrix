@@ -52,7 +52,7 @@ cat("matrix inconsistencies:<b>",nrow(inconsistencies),"</b><br>")
 
 cat("\n\n### Validated in the last two weeks")
 
-recently_validated %>% select(rcid,file.id,comment,date.validated) %>% arrange(date.validated,rcid) %>%  kable(format = "markdown")
+recently_validated %>% select(rcid,file.id,comment,date.validated) %>% arrange(date.validated,rcid) %>%  knitr::kable(format = "markdown")
 
 
 cat("\n\n### With HQ / Under Review")

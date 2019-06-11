@@ -17,7 +17,7 @@ library('researchcyclematrix')
 rcm<-rcm_download(main_columns_only = F)
 rcm<-rcm[rcm_is_data_unit_item(rcm),]
 rcmissues<-rcm_check(rcm)
-rcmissues %>% data.frame(rcm[rcmissues$id,]) %>% kable
+rcmissues %>% data.frame(rcm[rcmissues$id,]) %>% knitr::kable
 
 rcm_issue_export_by_country<-function(rcmissues,dir="./"){
   dir.create(dir,recursive = T)

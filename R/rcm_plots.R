@@ -62,7 +62,7 @@ rcm_gant<-function(rcm){
   rcm_dateslong$date.minormax[is.na(rcm_dateslong$date.minormax)] <- (min(rcm_dateslong$date.min,na.rm=T))-1
   rcm_dateslong$date <- sapply(rcm_dateslong$date,lubridate::as_date)
   rcm_dateslong$date<-lubridate::as_date(rcm_dateslong$date)
-  # rcm_dateslong %>% sapply(class) %>% kable
+
   ggplot(rcm)+
     geom_point(data = rcm_dateslong,
                aes(x=date, y=reorder(file.id,as.numeric(date.minormax)),colour=datetype))+

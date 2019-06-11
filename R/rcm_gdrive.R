@@ -182,9 +182,9 @@ jsonlite::toJSON(list(values=t(as.matrix(value))))
 g_sheets_update_index<-function(col="AR",spreadsheetId="1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk",...){
   rows<-c(1,1000)
 
-  for(i in 1:4){
-    if(rows[2]>3990){rows[2]<-3990}
-    if(rows[1]>3001){break}
+  for(i in 1:7){
+    if(rows[2]>6770){rows[2]<-6770}
+    if(rows[1]>6001){break}
     range<-paste0(paste0(paste0(col,rows[1]),":",paste0(col,rows[2])))
     thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",range,"?valueInputOption=USER_ENTERED")
 

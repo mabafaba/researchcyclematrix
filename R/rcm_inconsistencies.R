@@ -31,7 +31,7 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
   issues$status<-rcm$status[issues$id]
   if(nrow(issues)>0){
     message(paste(nrow(issues),"inconsistencies in RCM:"))
-    print(kable(list(issues$issue,rcm_unit(rcm[issues$id,])) %>% table))}else{
+    print(knitr::kable(list(issues$issue,rcm_unit(rcm[issues$id,])) %>% table))}else{
       message("no inconsistencies in RCM detected.")
     }
   issues$unit<-rcm$unit[issues$id]

@@ -26,4 +26,5 @@ RoxygenNote: 6.1.1
 Imports: 
     lubridate,
     assertthat,
-    jsonlite
+    jsonlite,
+    rmarkdown
