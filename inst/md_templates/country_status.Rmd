@@ -39,7 +39,7 @@ countries<-c(names(rcm_cl),names(delayed_cl),names(inconsistencies_cl)) %>% uniq
 
 ```
 
-```{r,results='asis'}
+```{r,results='asis', warning = F}
 cat("# SUMMARY\n\n")
 
 cat("validated in the last two weeks: <b>",nrow(recently_validated),"</b><br>")
@@ -49,6 +49,16 @@ cat("maximum days from submission to validation:<b>",max(lubridate::dmy(recently
 cat("under review:<b>",length(grep("HQ|partner|field",rcm$status)),"</b><br>")
 cat("delayed:<b>",nrow(delayed),"</b><br>")
 cat("matrix inconsistencies:<b>",nrow(inconsistencies),"</b><br>")
+
+cat("\n\n### How long did validations take?\n\n")
+
+
+ggplot(recently_validated)+geom_point(
+  aes(x= lubridate::dmy(date.validated),
+      y=as.numeric(
+        -(lubridate::ymd(recently_validated$date.hqsubmission.actual)-lubridate::dmy(recently_validated$date.validated)))))+xlab("date validated")+ylab("days until validation")
+
+
 
 cat("\n\n### Validated in the last two weeks")
 
@@ -80,6 +90,7 @@ cat("\n\n### RCM inconsistencies\n\n")
 
 inconsistencies$country<-substr(inconsistencies$rcid,1,3)
 ggplot(inconsistencies,aes(x = country,fill=issue))+geom_bar()+theme_minimal()+theme(legend.position = "right")+coord_flip()
+
 
 
 
@@ -126,14 +137,10 @@ under_review<-under_review %>% select(rcid,file.id,date.hqsubmission.actual) %>%
   
       kable(delayed_cl[[country]] %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed),format = "markdown") %>% print
     }
-
   
     cat(paste("\n\n### Comments","\n\n"))
     
     if(is.null(rcm_cl[[country]]) | !any(rcm_cl[[country]]$has_comment==T)){cat(crayon::silver("no comments\n\n"))}else{
-      
-    
-
 
 rcm_cl[[country]] %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% arrange(rcid) %>% kable(format = "markdown") %>% print
       

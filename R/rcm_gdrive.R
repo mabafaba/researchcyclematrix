@@ -113,6 +113,21 @@ rcm_set_to_withHQ<-function (file.id)
 
 
 
+
+#' set an item's status to "with Field" on google drive
+#' @param file.id the items file id name as a string
+#' @export
+rcm_set_to_withField<-function (file.id)
+{
+  message(paste0("setting to 'with Field': ",file.id))
+  rcm_change_value(file.id, column = "V", value = "with Field (api_state)")
+  rcm_set_withfield_date(file.id)
+}
+
+
+
+
+
 #' set an item's status to "validated" on google drive
 #' @param file.id the items file id name as a string
 #' @param hours_worked time spent on the validation in hours; must be numeric or NA
