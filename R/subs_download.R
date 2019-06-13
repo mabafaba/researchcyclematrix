@@ -100,7 +100,8 @@ rcm_update_from_subs<-function(subs,rcm){
 
   sapply(ids_to_update,rcm_set_to_withHQ)
   for(this_file.id in ids_to_update){
-    this_file.id_date<-subs$submission.datetime[which(subs$file.id==this_file.id)[1]]
+    this_file.id_date<-subs$submission.date[which(subs$file.id==this_file.id)[1]]
+    this_file.id_date<-lubridate::dmy(this_file.id_date)
     rcm_set_submission_date(
       this_file.id,
       this_file.id_date)

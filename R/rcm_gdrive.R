@@ -109,6 +109,7 @@ rcm_set_to_withHQ<-function (file.id)
 {
   message(paste0("setting to 'with HQ': ",file.id))
   rcm_change_value(file.id, column = "V", value = "with HQ (api_state)")
+
 }
 
 
@@ -121,7 +122,6 @@ rcm_set_to_withField<-function (file.id)
 {
   message(paste0("setting to 'with Field': ",file.id))
   rcm_change_value(file.id, column = "V", value = "with Field (api_state)")
-  rcm_set_withfield_date(file.id)
 }
 
 

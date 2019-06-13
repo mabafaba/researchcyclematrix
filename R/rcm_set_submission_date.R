@@ -4,7 +4,7 @@
 #' @return returns nothing important
 rcm_set_submission_date<-function(file.id,date){
   # stop if input no good:
-  if(!("POSIXct" %in% class(date))){
+  if(!any(c("POSIXct","Date") %in% class(date))){
     stop("date must be in POSIXct format")
   }
 
