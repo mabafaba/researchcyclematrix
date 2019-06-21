@@ -89,7 +89,7 @@ rcm_has_identified_status<-function(rcm){
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return logical vector
 rcm_is_data_unit_item<-function(rcm){
-  rcm$type %in% c("data","analysis","data & analysis")
+  rcm$type %in% c("data","analysis","data & analysis", "data deletion report")
 }
 
 #' do RCM rows belong to the reporting unit?

@@ -35,9 +35,13 @@ rcm_standardised_columns<-function(rcm){
   rcm$File.type[grepl("data",rcm$File.type) & grepl("analysis",rcm$File.type)]<-"data & analysis"
   rcm$File.type[grepl("data",rcm$File.type) & (rcm$File.type!="data & analysis")]<-"data"
   rcm$File.type[grepl("analysis",rcm$File.type) & (rcm$File.type!="data & analysis")]<-"analysis"
+  rcm$File.type[grepl("analysis plan",rcm$File.type)]<-"analysis plan"
+
   rcm$File.type[grepl("map",rcm$File.type)]<-"map"
   rcm$File.type[grepl("m\\&e",rcm$File.type)]<-"M&E"
   rcm$File.type[grepl("presentation",rcm$File.type)]<-"presentation"
+  rcm$File.type[grepl("deletion",rcm$File.type)]<-"data deletion report"
+
   rcm$id<-paste0(rcm$Research.Cycle.ID,":::",rcm$File.type,":::",rcm$File.ID_Name)
 
   # rcm %>% rename(date.endcollection.planned = Data.Collection...Planned.date.of.completion,
