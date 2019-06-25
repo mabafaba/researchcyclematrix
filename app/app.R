@@ -127,7 +127,7 @@ server <- function(input, output,session) {
      rcm_gant(rcm_unit_subset(rcm,input$unit))
   },height = 10000)
 
-  output$timeline<-renderPlot({validation_timeline(rcm)},height = 300)
+  output$timeline<-renderPlot({researchcyclematrix:::validation_timeline(rcm)},height = 300)
 
 
   observeEvent(input$file_id_validated, {

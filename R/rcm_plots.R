@@ -109,8 +109,14 @@ rcm_gant<-function(rcm){
 #' plot validation timeline
 #' @param rcm the RCM as given by rcm_download()
 #' @return ggplot object
-validation_timeline<-function(rcm){
-  rcm$status[!grepl("HQ|validated|field|partner|received",rcm$status)]<-"other"
+#' @export
+validation_timeline<-function(rcm, passed_days_included = 30, future_days_included = 30){
+  # rcm<-rcm[rcm$unit=="data",]
+  rcm$status[(rcm$status %in% c("", NA, " "))]<-"1 not received"
+  rcm$status[!grepl("HQ|validated|field|partner|received",rcm$status)]<-"unclear / not received"
+  rcm$date.hqsubmission.actual[rcm$status %in% c("1 not received","unclear / not received")]<-
+    lubridate::ymd(rcm$date.hqsubmission.planned.latest[rcm$status %in% c("1 not received","unclear / not received")])
+  # rcm$status[!(grepl("",rcm$status)),]<- "planned / other"
   ggplot(rcm)+geom_histogram(aes(date.hqsubmission.actual,fill=status),alpha=0.7,binwidth=1)+
     theme_minimal()+
     # scale_fill_manual(name="Unit",values=c("data"="black",
@@ -119,12 +125,24 @@ validation_timeline<-function(rcm){
     #                                          "research design"="orange",
     #                                          "other" = "grey"))+
     scale_fill_manual(name="",values=c("1 not received"= "#000000",
-                                       "2 with HQ"="#EE5859",
-                                       "3 validated"="#CDCDCD",
-                                       "with field"="#58EEEE",
-                                       "with partner" = "#D2CBB8",
-                                       "other"='#58585A'))+
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))+xlim(c(Sys.Date()-100,Sys.Date()))+
-    facet_grid(unit~.)+labs(x="date received","")+theme(axis.line.y=element_blank())+theme(panel.border=element_blank())+
-    theme(axis.title.y=element_blank(),axis.text.y=element_blank(),axis.ticks.y=element_blank())
+                                       "2 with HQ"="#EE5858",
+                                       "3 validated"= "#58EE58", # "#CDCDCD",
+                                       "with field"="#EEEE58",
+                                       "with partner" = "#5858EE",
+                                       "unclear / not received"='#585858',
+                                       rep("#EEEEEE",100)))+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+    facet_grid(unit~.,scales = "fixed")+
+     labs(x="date received (or planned)","")+
+    theme(axis.line.y=element_blank())+
+    theme(panel.border=element_blank())+
+    theme(
+      axis.title.y=element_blank(),
+      axis.text.y=element_text(size = 7),
+      axis.ticks.y=element_blank()
+          )+
+    theme(panel.grid.minor.y = element_blank())+
+    scale_x_date(date_minor_breaks = "1 day",date_breaks = "1 week",limits = c(Sys.Date()-passed_days_included,Sys.Date()+future_days_included))+
+    geom_vline(aes(xintercept=lubridate::as_date(Sys.Date())),lty = "dotted")
+
 }

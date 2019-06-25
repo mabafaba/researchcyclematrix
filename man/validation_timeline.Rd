@@ -4,7 +4,8 @@
 \alias{validation_timeline}
 \title{plot validation timeline}
 \usage{
-validation_timeline(rcm)
+validation_timeline(rcm, passed_days_included = 30,
+  future_days_included = 30)
 }
 \arguments{
 \item{rcm}{the RCM as given by rcm_download()}
