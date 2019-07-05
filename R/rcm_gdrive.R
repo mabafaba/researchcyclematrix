@@ -161,17 +161,23 @@ rcm_set_to_withField<-function (file.id)
 #' @param file.id the items file id name as a string
 #' @param hours_worked time spent on the validation in hours; must be numeric or NA
 #' @export
-rcm_set_to_validated<-function(file.id,hours_worked,comment){
+rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALSE){
   if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
-  
+  if(DDR.received != TRUE & DDR.received != FALSE ){stop("invalid value for DDR.received. Should be TRUE or FALSE.")  }
   message(paste0("setting to 'validated': ",file.id))
   rcm_change_value(file.id,column = "V",value = "validated (api_state)")
   
-  #Data Deletion Report
+  #Data Deletion Report only for raws concerning dataset
   file.type <- get_gdrive_fileType(file.id)
-  if( grepl("DATA", toupper(file.type)) == TRUE ){
-    rcm_add_value(file.id, column = "I", value = "DDR validated") # I is the column for related files
+  if( grepl("DATA", toupper(file.type)) == TRUE){
+    if(DDR.received == TRUE){
+      rcm_change_value(file.id, column = "AM", value = "TRUE") # I is the column for related files
+    }
+    else{
+      rcm_change_value(file.id, column = "AM", value = "FALSE") # I is the column for related files
+    }
   }
+
   
   rcm_set_validation_date(file.id)
   rcm_set_hours_worked(file.id,hours_worked)
