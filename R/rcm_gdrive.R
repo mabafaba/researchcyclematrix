@@ -95,6 +95,35 @@ get_gdrive_row<-function(file.id,rcm=NULL){
 }
 
 
+#' which row on google drive matches a file.id?
+#' @param file.id the file id name of the item
+#' @param rcm you can provide a custom rcm to use for row identification.
+#' Not recommended (except for debugging purposes)
+#' this will return the wrong row if the this is not a raw rcm (from rcm_download(raw=T)) or if the RCM online changed since it was downloaded
+#' @return (estimated) google drive row index of file.id
+get_gdrive_relatedFiles<-function(file.id,rcm=NULL){
+  if(is.null(rcm)){
+    rcm<-rcm_download(raw=T)
+  }
+  local_row<-match(file.id,rcm[[grep("File.ID_Name",names(rcm))]])
+  relatedFiles<-rcm$Related.files[local_row[1]]
+}
+
+#' which row on google drive matches a file.id?
+#' @param file.id the file id name of the item
+#' @param rcm you can provide a custom rcm to use for row identification.
+#' Not recommended (except for debugging purposes)
+#' this will return the wrong row if the this is not a raw rcm (from rcm_download(raw=T)) or if the RCM online changed since it was downloaded
+#' @return (estimated) google drive row index of file.id
+get_gdrive_fileType<-function(file.id,rcm=NULL){
+  if(is.null(rcm)){
+    rcm<-rcm_download(raw=T)
+  }
+  local_row<-match(file.id,rcm[[grep("File.ID_Name",names(rcm))]])
+  fileType<-rcm$File.type[local_row[1]]
+}
+
+
 #' get google drive row links matching items in a RCM
 rcm_gdrive_links<-function(rcm){
   links<-to_shiny_link(gdrive_hyperlink_row(rcm$file.id),rcm$file.id)
@@ -132,15 +161,43 @@ rcm_set_to_withField<-function (file.id)
 #' @param file.id the items file id name as a string
 #' @param hours_worked time spent on the validation in hours; must be numeric or NA
 #' @export
-rcm_set_to_validated<-function(file.id,hours_worked,comment){
+rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALSE){
   if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
-
+  if(DDR.received != TRUE & DDR.received != FALSE ){stop("invalid value for DDR.received. Should be TRUE or FALSE.")  }
   message(paste0("setting to 'validated': ",file.id))
   rcm_change_value(file.id,column = "V",value = "validated (api_state)")
+  
+  #Data Deletion Report only for raws concerning dataset
+  file.type <- get_gdrive_fileType(file.id)
+  if( grepl("DATA", toupper(file.type)) == TRUE){
+    if(DDR.received == TRUE){
+      rcm_change_value(file.id, column = "AM", value = "TRUE") # I is the column for related files
+    }
+    else{
+      rcm_change_value(file.id, column = "AM", value = "FALSE") # I is the column for related files
+    }
+  }
+
+  
   rcm_set_validation_date(file.id)
   rcm_set_hours_worked(file.id,hours_worked)
   rcm_comment(file.id,comment,overwrite = T)
+  
+}
 
+#' add a value on google drive based on the file.id
+rcm_add_value<-function(file.id,column,value){
+  if(is.numeric(column)){
+    if(column>26){stop('only columns <26 can be addressed with numeric index')}
+    column<-LETTERS[column]
+  }
+  row<-get_gdrive_row(file.id)
+  value_in_cell <- get_gdrive_relatedFiles(file.id)
+  print(file.id)
+  print(row)
+  print(value_in_cell)
+  new_value <- paste(value_in_cell, value, sep=" / ")
+  g_sheets_put(row,column,new_value,spreadsheetId = "1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk")
 }
 
 #' change a value on google drive based on the file.id
