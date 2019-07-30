@@ -36,7 +36,7 @@ todo_delayed<-function(rcm,days_since_planned_submission=14){
       !(grepl("validated|HQ|field",rcm$status)),
 
     ] %>%
-    as_tibble %>% arrange(date.hqsubmission.planned.latest,substr(rcid,1,3))
+    (tibble::as_tibble) %>% arrange(date.hqsubmission.planned.latest,substr(rcid,1,3))
 }
 
 

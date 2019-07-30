@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = FALSE)
 library(purrr)
 library(knitr)
 library(ggplot2)
+library(tibble)
+library(dplyr)
 as_countrylist<-function(x){
 x$country<-substr(x$rcid,1,3)
 x_countrylist<-x %>% split.data.frame(x$country)  
@@ -62,15 +64,15 @@ ggplot(recently_validated)+geom_point(
 
 cat("\n\n### Validated in the last two weeks")
 
-recently_validated %>% select(rcid,file.id,comment,date.validated) %>% arrange(date.validated,rcid) %>%  knitr::kable(format = "markdown")
+recently_validated %>% select(rcid,file.id,comment,date.validated) %>% dplyr::arrange(date.validated,rcid) %>%  knitr::kable(format = "markdown")
 
 
 cat("\n\n### With HQ / Under Review")
 
 rcm %>% filter(grepl("hq|partner|field",status,ignore.case = T)) %>%
-                 select(rcid,file.id,comment,date.hqsubmission.actual,status) %>%
-                 arrange(status,date.hqsubmission.actual,rcid) %>% 
-                 kable(format = "markdown")
+                 dplyr::select(rcid,file.id,comment,date.hqsubmission.actual,status) %>%
+                 dplyr::arrange(status,date.hqsubmission.actual,rcid) %>% 
+                 knitr::kable(format = "markdown")
 
 
 cat("\n\n### Delays\n\n")
@@ -108,7 +110,7 @@ for(country in countries){
 cat(paste("\n\n### Recently Validated (2 weeks)","\n\n"))
       if(is.null(recently_validated_cl[[country]])){cat(crayon::silver("no items\n\n"))}else{
 
-  kable(recently_validated_cl[[country]] %>% select(rcid,file.id,comment,days_since_validation) %>% arrange(days_since_validation),format = "markdown") %>% print
+  kable(recently_validated_cl[[country]] %>% select(rcid,file.id,comment,days_since_validation) %>% dplyr::arrange(days_since_validation),format = "markdown") %>% print
   
 }
   
@@ -120,7 +122,7 @@ under_review<-under_review[grepl("HQ|field|partner",under_review$status,ignore.c
 
 if(nrow(under_review)==0){cat("no items under review")}
 
-under_review<-under_review %>% select(rcid,file.id,date.hqsubmission.actual) %>% arrange(lubridate::ymd(date.hqsubmission.actual))
+under_review<-under_review %>% select(rcid,file.id,date.hqsubmission.actual) %>% dplyr::arrange(lubridate::ymd(date.hqsubmission.actual))
   kable(under_review,format = "markdown") %>% print
   
 }
@@ -135,7 +137,7 @@ under_review<-under_review %>% select(rcid,file.id,date.hqsubmission.actual) %>%
   cat(paste("\n\n### Delays","\n\n"))
     if(is.null(delayed_cl[[country]])){cat(crayon::silver("no known delays\n\n"))}else{
   
-      kable(delayed_cl[[country]] %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed),format = "markdown") %>% print
+      knitr::kable(delayed_cl[[country]] %>% dplyr::arrange(desc(days_delayed)) %>% dplyr::select(rcid,file.id,days_delayed),format = "markdown") %>% print
     }
   
     cat(paste("\n\n### Comments","\n\n"))

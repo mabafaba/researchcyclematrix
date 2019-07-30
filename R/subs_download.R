@@ -23,12 +23,13 @@ subs_download<-function(){
 
 
 
+
   subs$submission.datetime<-lubridate::as_datetime(subs$submission.datetime)
 
   subs$in.country.deadline<-lubridate::dmy(subs$in.country.deadline)
   subs$time.since.submission<-(lubridate::as_datetime(Sys.time())-subs$submission.datetime)
   subs$days.since.submission<-as.numeric(subs$time.since.submission,"days")
-  subs<-subs[,!is.na(colnames(subs))] %>% as_tibble
+  subs<-subs[,!is.na(colnames(subs))] %>% (tibble::as_tibble)
 
   multiids<-subs
   multiids$rows<-1:nrow(multiids)

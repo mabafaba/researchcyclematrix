@@ -64,7 +64,6 @@ rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T){
 
   rcm<-rcm[rcm$unit=="data",]
   todo<-todo_create(rcm,subs)
-
   delayed<-todo_delayed(rcm)
   inconsistent<-rcm_check(rcm)
 
