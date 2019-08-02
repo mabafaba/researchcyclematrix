@@ -16,7 +16,7 @@ if(is.null(rcm)){
 rcm<-rcm[grepl(unit,rcm$unit),]
 inconsistencies<-rcm_check(rcm,check.archived = F,check.validated = F)
 inconsistencies<-inconsistencies[inconsistencies$issue!="data unit item with non-standardisable status",]
-inconsistencies <- inconsistencies %>% arrange(rcid)
+inconsistencies <- inconsistencies %>% dplyr::arrange(rcid)
 
 inconsistencies %>% split.data.frame(hq_focal_point(inconsistencies$rcid)) %>% mapply(.,names(.),FUN = function(inc,who){
   thisfile<-paste0("inconsistencies_",who,".csv")

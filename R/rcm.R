@@ -29,7 +29,7 @@ alpha = alpha*10e5
 rcm_show<-function(rcm,file.id){
   rcm<-as.data.frame(rcm,stringsAsFactors=F)
   todorow<-tibble::as_tibble(rcm_find_row_by_file.id(rcm,file.id))
-  if(nrow(todorow)==0){message(silver(paste0(italic(file.id)," not found")));return(invisible(NULL))}
+  if(nrow(todorow)==0){message(crayon::silver(paste0(italic(file.id)," not found")));return(invisible(NULL))}
   message(paste((crayon::silver(todorow["rcid"])),
                 crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))))
   if(grepl("HQ",tolower(todorow$status))){

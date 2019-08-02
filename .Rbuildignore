@@ -6,3 +6,4 @@
 ^./use/*
 ^./use
 ^\.httr-oauth$
+^appveyor\.yml$
