@@ -82,7 +82,7 @@ rcm_deadline_status<-function(date){
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return logical vector
 rcm_has_identified_status<-function(rcm){
-  grepl("HQ|validated|field|partner|not received",rcm$status)
+  grepl("HQ|validated|field|partner|not received|cancelled",rcm$status) | rcm$status=="" | is.na(rcm$status)
 }
 
 #' do RCM rows belong to the data unit?

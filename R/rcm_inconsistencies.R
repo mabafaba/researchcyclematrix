@@ -5,14 +5,13 @@
 #' @export
 rcm_check<-function(rcm,check.archived=F,check.validated=F){
   if(!check.archived){rcm<-rcm[rcm$archived!=T,]}
-  if(!check.validated){rcm<-rcm[rcm$status!="validated",]}
-
+  if(!check.validated){rcm<-rcm[!grepl("validated",rcm$status),]}
 
   issues<-rbind(
-    rcm_find_issue(rcm,rcm_issue$passed_planned_not_recieved, issue_name = "planned submission passed but no received date"),
+    rcm_find_issue(rcm,rcm_issue$passed_planned_not_recieved, issue_name = "planned submission passed but not received"),
     rcm_find_issue(rcm,rcm_issue$dates_missing, issue_name = "none of the hq submission dates (planned/received) available"),
-    rcm_find_issue(rcm,rcm_issue$with_hq_but_no_received_date, issue_name = "no received date but with HQ"),
-    rcm_find_issue(rcm,rcm_issue$with_field_but_not_received_date, issue_name = "no received date but with field"),
+    # rcm_find_issue(rcm,rcm_issue$with_hq_but_no_received_date, issue_name = "no received date but with HQ"),
+    # rcm_find_issue(rcm,rcm_issue$with_field_but_not_received_date, issue_name = "no received date but with field"),
     rcm_find_issue(rcm,rcm_issue$data_unit_no_status, issue_name = "data unit item with non-standardisable status"),
     rcm_find_issue(rcm,rcm_issue$duplicated_file_id, issue_name = "file-id-name not unique")
   )
@@ -26,7 +25,7 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
   issues$rcid<-rcm$rcid[issues$id]
 
   # issues$file.id<-rcm$file.id[issues$id]
-  issues$`file id`<-rcm$link[issues$id]
+  issues$`file id`<-rcm$file.id[issues$id]
   issues$comment<-rcm$comment[issues$id]
   issues$status<-rcm$status[issues$id]
   if(nrow(issues)>0){
@@ -57,7 +56,7 @@ rcm_issue$dates_missing<-function(rcm){which(is.na(rcm$date.hqsubmission.planned
 rcm_issue$with_hq_but_no_received_date<-function(rcm){which(status_with_hq(rcm) & is.na(rcm$date.hqsubmission.actual))}
 rcm_issue$with_field_but_not_received_date<-function(rcm){which(status_with_field(rcm) & is.na(rcm$date.hqsubmission.actual))}
 rcm_issue$data_unit_no_status<-function(rcm){which(rcm_is_data_unit_item(rcm) & !rcm_has_identified_status(rcm))}
-rcm_issue$passed_planned_not_recieved<-function(rcm){which(rcm_past_planned_submission(rcm) & (is.na(rcm$date.hqsubmission.actual)))}
+rcm_issue$passed_planned_not_recieved<-function(rcm){which(rcm_past_planned_submission(rcm) & !(grepl("hq|field|validated|cancelled",tolower(rcm$status))))}
 rcm_issue$duplicated_file_id<-function(rcm){which(duplicated(rcm$file.id))}
 
 
