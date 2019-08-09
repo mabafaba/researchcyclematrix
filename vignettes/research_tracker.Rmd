@@ -1,0 +1,91 @@
+---
+title: "Prefilling the monthly research tracker"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Prefilling the monthly research tracker}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  eval = FALSE,
+  comment = "#>"
+)
+```
+
+## Quickstart
+
+For this to work, you must have the "xlsx" package installed. (if xlsx doesn't work on your machine, see further instructions below)
+Then just run this to load the package and prefill the tracker:
+
+```{r}
+library(researchcyclematrix)
+rcm_prefill_research_tracker()
+```
+
+## custom target file
+
+If you speficy a custom target file, the path needs to exist and the file needs to end with ".xlsx"
+```{r}
+researchcyclematrix::rcm_prefill_research_tracker(output_xlsx_file_name = "./myfolder/custom_output_filename.xlsx")
+```
+
+## Custom research cycle matrix
+
+By default, the research cycle matrix will be downloaded from the google drive and used directly.
+You can also use an RCM that was downloaded separately, for example to edit / subset it first:
+
+```{r}
+# download research cycle matrix:
+rcm <- rcm_download()
+# edit, for example take a subset (only reporting unit items):
+rcm_reporting_only <- rcm[ rcm$unit == "reporting", ]
+# create template
+
+rcm_prefill_research_tracker(output_xlsx_file_name = "tracker_reporting.xlsx",
+                             rcm = rcm_reporting_only)
+
+```
+
+## Outputting many trackers
+
+With custom RCMs we can create many trackers for different subsets at once. For example for each country.
+
+```{r}
+# get first three letters country code from research cycle ID
+rcm<-rcm_download()
+rcm$country<-substr(rcm$rcid, 1, 3)
+# split the rcm into a list of smaller rcms:
+
+rcm_by_country<- split.data.frame(rcm,rcm$country)
+
+output_xlsx_file_name <- paste0("tracker_",names(rcm_by_country),"_", Sys.Date(),".xlsx")
+
+# use the "purrr" package to do something many times (purrr::map) and make sure it doesn't stop if an iteration fails (purrr::possibly):
+library(purrr)
+# run the function on each country / each part of the rcm and create tracker files
+safe_rcm_prefill_research_tracker <- possibly(rcm_prefill_research_tracker,otherwise = "couldn't write xlsx file.")
+purrr::map2(output_xlsx_file_name,
+            rcm_by_country,
+            safe_rcm_prefill_research_tracker)
+
+
+```
+## If xlsx doesn't work / JAVA related problems
+
+If the xlsx package is not installed or does not work due to JAVA issues, we can give you just the prefilled rows data frame. You need to write that to a csv file and copy/paste it into the template yourself.
+
+```{r}
+# get rows only without trying to read/write xlsx:
+prefill_data <- rcm_prefill_research_tracker(use_xlsx_package = FALSE)
+# write to file:
+write.csv(prefill_data, "prefill_data.csv")
+# open the file:
+browseURL("prefill_data.csv")
+#... now copy the rows.
+```
+
+
+

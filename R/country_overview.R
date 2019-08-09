@@ -47,14 +47,17 @@ country_status_markdown <- function(rcm,delayed,inconsistencies, path="./", file
 #' compile an overview report of each countries status
 #' @param rcm can be ommited
 #' @param subs can be ommited
-#' @update_rcm logical: whether to update the rcm from the submissions sheet before producing the report. Slows it down a bit but hey at least your report is up to date afterwards. default is TRUE
+#' @param update_rcm logical: whether to update the rcm from the submissions sheet before producing the report. Slows it down a bit but hey at least your report is up to date afterwards. default is TRUE
+#' @param unit which unit(s) to include? Defaults to 'data'. uses regex: for all units, enter a dot "."; for multiple units, use | operator (i.e. "data|reporting|research design|gis")
 #' @return nothing interesting, but writes a html file into the working directory and opens it in the browser
 #' @export
-rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T){
+rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T, unit = "data"){
 
 
   if(is.null(rcm)){rcm<-rcm_download(include_validated=T)}
   if(is.null(subs)){subs<-subs_download()}
+
+
 
   if(update_rcm){
   message(crayon::black("updating matrix with any new submissions.."))
@@ -62,14 +65,16 @@ rcm_dashboard <- function(rcm=NULL,subs=NULL,update_rcm = T){
   }
 
 
-  rcm<-rcm[rcm$unit=="data",]
+  rcm<-rcm[!(rcm$rcid == "" & rcm$file.id ==""),]
+
+  rcm<-rcm[grepl(unit,rcm$unit,ignore.case = TRUE),]
   todo<-todo_create(rcm,subs)
   delayed<-todo_delayed(rcm)
   inconsistent<-rcm_check(rcm)
 
-  inconsistent<-inconsistent %>% filter(
-    !(issue %in% c("planned submission passed but no received date", "data unit item with non-standardisable status"))
-  )
+  # inconsistent<-inconsistent #%>% filter(
+    # !(issue %in% c("planned submission passed but no received date", "data unit item with non-standardisable status"))
+  # )
 
   country_status_markdown(rcm = rcm,delayed = delayed,inconsistencies = inconsistent)
 

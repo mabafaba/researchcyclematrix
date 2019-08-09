@@ -32,7 +32,7 @@ todo_delayed<-function(rcm,days_since_planned_submission=14){
     !is.na(rcm$file.id) &
       !is.na(rcm$date.hqsubmission.planned.latest) &
       (rcm$date.hqsubmission.planned.latest <= (Sys.Date()-days_since_planned_submission)) &
-      rcm_is_data_unit_item(rcm) &
+      # rcm_is_data_unit_item(rcm) &
       !(grepl("validated|HQ|field",rcm$status)),
 
     ] %>%

@@ -25,7 +25,7 @@ alpha = alpha*10e5
 #' display a row in the rcm based on the file id
 #' @param rcm the RCM
 #' @param file.id the file id, or a file id search term (see `?rcm_find_row_by_file.id` for details)
-#' @value no output, just printing to console
+#' @return no output, just printing to console
 rcm_show<-function(rcm,file.id){
   rcm<-as.data.frame(rcm,stringsAsFactors=F)
   todorow<-tibble::as_tibble(rcm_find_row_by_file.id(rcm,file.id))

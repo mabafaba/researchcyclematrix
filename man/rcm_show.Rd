@@ -11,6 +11,9 @@ rcm_show(rcm, file.id)
 
 \item{file.id}{the file id, or a file id search term (see `?rcm_find_row_by_file.id` for details)}
 }
+\value{
+no output, just printing to console
+}
 \description{
 display a row in the rcm based on the file id
 }

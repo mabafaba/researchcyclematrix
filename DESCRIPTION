@@ -10,7 +10,8 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat
+    testthat,
+    xlsx
 Depends: 
     dplyr,
     knitr,
@@ -28,3 +29,4 @@ Imports:
     assertthat,
     jsonlite,
     rmarkdown
+VignetteBuilder: knitr

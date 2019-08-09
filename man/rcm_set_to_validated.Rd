@@ -4,7 +4,8 @@
 \alias{rcm_set_to_validated}
 \title{set an item's status to "validated" on google drive}
 \usage{
-rcm_set_to_validated(file.id, hours_worked, comment)
+rcm_set_to_validated(file.id, hours_worked, comment,
+  DDR.received = FALSE)
 }
 \arguments{
 \item{file.id}{the items file id name as a string}

@@ -58,26 +58,23 @@ cat("\n\n### How long did validations take?\n\n")
 ggplot(recently_validated)+geom_point(
   aes(x= lubridate::dmy(date.validated),
       y=as.numeric(
-        -(lubridate::ymd(recently_validated$date.hqsubmission.actual)-lubridate::dmy(recently_validated$date.validated)))))+xlab("date validated")+ylab("days until validation")
+        -(lubridate::ymd(recently_validated$date.hqsubmission.actual)-lubridate::dmy(recently_validated$date.validated))),
+      color = type
+      )
+  )+
+  theme_minimal()+
+  xlab("date validated")+ylab("days until validation")+facet_grid(cols=vars(unit))
 
 
-
-cat("\n\n### Validated in the last two weeks")
-
-recently_validated %>% select(rcid,file.id,comment,date.validated) %>% dplyr::arrange(date.validated,rcid) %>%  knitr::kable(format = "markdown")
-
-
-cat("\n\n### With HQ / Under Review")
-
-rcm %>% filter(grepl("hq|partner|field",status,ignore.case = T)) %>%
-                 dplyr::select(rcid,file.id,comment,date.hqsubmission.actual,status) %>%
-                 dplyr::arrange(status,date.hqsubmission.actual,rcid) %>% 
-                 knitr::kable(format = "markdown")
 
 
 cat("\n\n### Delays\n\n")
 
-ggplot2::ggplot(delayed,aes(x=days_delayed,y=country))+geom_jitter(height=0.2,width=7,alpha=0.5)+theme_minimal()+scale_x_continuous("days passed planned submission date")+theme(axis.text.y  = element_text(size=1))+geom_text(aes(label=file.id),hjust=0.5,angle=0,nudge_y=-0.5,size=2,check_overlap = T)
+
+ggplot2::ggplot(delayed,aes(x=days_delayed,y=country,color=unit))+geom_jitter(height=0.2,width=7,alpha=0.5)+
+  theme_minimal()+scale_x_continuous("days passed planned submission date")+
+  theme(axis.text.y  = element_text(size=6))+
+  geom_text(aes(label=file.id),hjust=0.5,angle=0,nudge_y=-0.5,size=2,check_overlap = T)
 # ggplot2::facet_grid(. ~ country)+coord_flip()
 
 
@@ -98,6 +95,54 @@ ggplot(inconsistencies,aes(x = country,fill=issue))+geom_bar()+theme_minimal()+t
 
 
 ```
+
+
+
+
+```{r,results='asis'}
+
+cat("# GLOBAL LISTS\n\n")
+
+
+cat(paste("### Delays (planned date passed & not received)","\n\n"))
+  if(nrow(delayed)==0){cat(crayon::silver("no known delays\n\n"))}else{
+    kable(delayed %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed,comment),format = "markdown") %>% print
+  }
+
+
+cat("\n\n### Under Review")
+
+rcm %>% filter(grepl("hq|partner|field",status,ignore.case = T)) %>%
+                 dplyr::select(rcid,file.id,comment,date.hqsubmission.actual,status) %>%
+                 dplyr::arrange(status,date.hqsubmission.actual,rcid) %>% 
+                 knitr::kable(format = "markdown")
+
+
+cat("\n\n### Validated Recently")
+
+recently_validated %>% select(rcid,file.id,comment,date.validated) %>% dplyr::arrange(date.validated,rcid) %>%  knitr::kable(format = "markdown") %>% kableExtra::kable_styling()
+
+
+  cat(paste("\n\n### RCM inconsistencies","\n\n"))
+      if(nrow(inconsistencies)==0){cat(crayon::silver("no known inconsistencies\n\n"))}else{
+  kable(inconsistencies,format = "markdown") %>% print
+  
+}
+
+
+  
+    # cat(paste("### Comments","\n\n"))
+    # 
+    # if((nrow(rcm)==0) | !any(rcm$has_comment==T)){cat(crayon::silver("no comments\n\n"))}else{
+    #   
+    # rcm %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% arrange(rcid) %>% kable(format = "markdown") %>% print
+    #   
+    #   
+    # }
+
+
+```
+
 
 
 ```{r,results='asis'}
@@ -152,36 +197,6 @@ rcm_cl[[country]] %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% a
   
   
 }
-```
-
-
-```{r,results='asis'}
-
-  cat("# GLOBAL\n\n")
-
-
-  cat(paste("## RCM inconsistencies","\n\n"))
-      if(nrow(inconsistencies)==0){cat(crayon::silver("no known inconsistencies\n\n"))}else{
-  kable(inconsistencies,format = "markdown") %>% print
-  
-}
-  cat(paste("### Delays","\n\n"))
-    if(nrow(delayed)==0){cat(crayon::silver("no known delays\n\n"))}else{
-  
-      kable(delayed %>% arrange(desc(days_delayed)) %>% select(rcid,file.id,days_delayed),format = "markdown") %>% print
-    }
-
-  
-    cat(paste("### Comments","\n\n"))
-    
-    if((nrow(rcm)==0) | !any(rcm$has_comment==T)){cat(crayon::silver("no comments\n\n"))}else{
-      
-    rcm %>% filter(has_comment) %>% select(rcid,file.id,comment) %>% arrange(rcid) %>% kable(format = "markdown") %>% print
-      
-      
-    }
-
-
 ```
 
 
