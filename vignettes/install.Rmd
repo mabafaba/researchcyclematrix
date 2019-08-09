@@ -1,0 +1,74 @@
+---
+title: "Installing this package & getting help"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Installing this package & getting help}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval =FALSE
+)
+```
+
+
+## Intro
+
+The goal of the researchcyclematrix package is
+
+1. To not have to look at the RCM anymore. (Who picked that colour scheme)
+1. Operate on the RCM directly from R
+1. Streamline the process of keeping the matrix up to date & consistent
+
+## Install
+
+to install the researchcyclematrix package run
+
+```{r}
+devtools::install_github("mabafaba/researchcyclematrix", build_opts = c(), build_vignettes = TRUE)
+
+```
+
+
+## Documentation
+Open the documentation:
+
+```{r}
+browseVignettes("researchcyclematrix")
+```
+
+
+
+
+## Troubleshooting the installation
+
+1. Make sure you have R version >=3.5.3 You can check that with 
+
+```{r}
+version
+```
+If your version is older, delete R and download and install it again, or use `installr` package (might be a bit of a struggle though.)
+
+2. Make sure you're on the latest version of devtools
+
+```{r}
+
+install.packages()
+```
+
+```{r setup}
+library(researchcyclematrix)
+```
+
+## Contributing to the package
+Read the [developer readme](https://github.com/mabafaba/researchcyclematrix) as an introduction to how this package is structured 
+The best place to start contributing to this package is by checking the open [issues on github](https://github.com/mabafaba/researchcyclematrix/issues/) and join the conversation.
+Its best to first leave a comment on the issue to start a conversation with the current maintainers before writing any code.
+
+
+
+
