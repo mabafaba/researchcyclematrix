@@ -28,5 +28,7 @@ Imports:
     lubridate,
     assertthat,
     jsonlite,
-    rmarkdown
+    rmarkdown,
+    purrr,
+    zip
 VignetteBuilder: knitr

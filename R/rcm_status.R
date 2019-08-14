@@ -96,7 +96,7 @@ rcm_is_data_unit_item<-function(rcm){
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return logical vector
 rcm_is_reporting_unit_item<-function(rcm){
-  rcm$type %in% c("report","factsheet","situation","presentation")
+  rcm$type %in% c("report","factsheet","situation overview","presentation", "brief", "profile")
 }
 
 #' do RCM rows belong to the research design unit?

@@ -64,11 +64,5 @@ install.packages()
 library(researchcyclematrix)
 ```
 
-## Contributing to the package
-Read the [developer readme](https://github.com/mabafaba/researchcyclematrix) as an introduction to how this package is structured 
-The best place to start contributing to this package is by checking the open [issues on github](https://github.com/mabafaba/researchcyclematrix/issues/) and join the conversation.
-Its best to first leave a comment on the issue to start a conversation with the current maintainers before writing any code.
-
-
 
 

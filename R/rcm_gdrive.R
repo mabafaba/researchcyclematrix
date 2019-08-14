@@ -11,17 +11,11 @@
 #' @param raw logical: if TRUE ignores all other parameters and returns the raw download (default FALSE)
 #' @return a data frame with the research cycle matrix
 #' @export
-rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",main_columns_only=T,fill.dates=T,remove_empty=T,gdrive_links=T,raw=F){
+rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",main_columns_only=T,fill.dates=T,remove_empty=T,gdrive_links=F,raw=F){
   print("downloading rcm...")
   rcm<-read.csv("https://docs.google.com/spreadsheets/d/1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk/gviz/tq?tqx=out:csv&sheet=RC_Matrix_2.1",
                 stringsAsFactors = F)
 
-  # json_raw<-readLines("https://docs.google.com/a/google.com/spreadsheets/d/1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk/gviz/tq?tq=select%20H")[2]
-  # json_raw<-gsub("google.visualization.Query.setResponse(","",json_raw,fixed = T)
-  # json_raw<-gsub("\\);$","",json_raw,fixed = F)
-  # file.id.remote<-rjson::fromJSON(json_raw)
-  # file.id.remote$table$rows %>% unlist %>% unname %>% length
-  # json_raw %>% cat
   x<-rcm[1,]
   if(remove_empty){rcm<-rcm[apply(rcm,1,function(x){
     x<-x[-which(names(x)=="index")];!all(is.na(x)|x=="")}),]
@@ -36,7 +30,7 @@ rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",
     rcm[,i] <- as.Date(as.character(rcm[,i]),format=dateformat)
   }
 
-  after_year<-as.Date(paste0(after_year,"-12-31"),format="%Y-%m-%d")
+  after_year<-as.Date(paste0(after_year,"2014-12-31"),format="%Y-%m-%d")
   too_early_entries<-apply(rcm[,datecols],2,function(x){x<after_year}) %>% apply(1,any,na.rm =T)
   rcm<-rcm[!too_early_entries,,drop=F]
 
@@ -52,7 +46,7 @@ rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",
                  "date.endcollection.planned","date.endcollection.actual",
                  "date.hqsubmission.planned.first","date.hqsubmission.planned.latest", "date.hqsubmission.actual",
                  "date.feedback","date.validated","date.milestone",
-                 "status","archived","unit","comment")
+                 "status","archived","unit","comment","rc.title","project.code")
     if(gdrive_links){main_cols<-c(main_cols,"link")}
     rcm<-rcm[,main_cols]
   }
@@ -166,7 +160,7 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALS
   if(DDR.received != TRUE & DDR.received != FALSE ){stop("invalid value for DDR.received. Should be TRUE or FALSE.")  }
   message(paste0("setting to 'validated': ",file.id))
   rcm_change_value(file.id,column = "V",value = "validated (api_state)")
-  
+
   #Data Deletion Report only for raws concerning dataset
   file.type <- get_gdrive_fileType(file.id)
   if( grepl("DATA", toupper(file.type)) == TRUE){
@@ -178,11 +172,11 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALS
     }
   }
 
-  
+
   rcm_set_validation_date(file.id)
   rcm_set_hours_worked(file.id,hours_worked)
   rcm_comment(file.id,comment,overwrite = T)
-  
+
 }
 
 #' add a value on google drive based on the file.id

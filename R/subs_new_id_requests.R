@@ -6,7 +6,7 @@
 #' @export
 subs_with_new_id<-function(subs){
 
-  subs[subs$file.id.new,]
+  subs[as.logical(subs$file.id.new) & !is.na(subs$new.file.id),,drop = FALSE]
 
 }
 

@@ -13,7 +13,8 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
     # rcm_find_issue(rcm,rcm_issue$with_hq_but_no_received_date, issue_name = "no received date but with HQ"),
     # rcm_find_issue(rcm,rcm_issue$with_field_but_not_received_date, issue_name = "no received date but with field"),
     rcm_find_issue(rcm,rcm_issue$data_unit_no_status, issue_name = "data unit item with non-standardisable status"),
-    rcm_find_issue(rcm,rcm_issue$duplicated_file_id, issue_name = "file-id-name not unique")
+    rcm_find_issue(rcm,rcm_issue$duplicated_file_id, issue_name = "file-id-name not unique"),
+    rcm_find_issue(rcm,rcm_issue$too_long_with_field, issue_name = "with field longer than expected")
   )
 
   # issues_data_unit_no_status<-data.frame(id=which(is.na(rcm$date.hqsubmission.planned.latest) &
@@ -52,12 +53,26 @@ rcm_find_issue<-function(rcm,get_issue_ids_fun,issue_name){
 }
 
 rcm_issue<-list()
-rcm_issue$dates_missing<-function(rcm){which(is.na(rcm$date.hqsubmission.planned.first) & is.na(rcm$date.hqsubmission.planned.latest) & is.na(rcm$date.hqsubmission.actual))}
+
+rcm_issue$dates_missing<-function(rcm){
+  which(is.na(rcm$date.hqsubmission.planned.first) &
+        is.na(rcm$date.hqsubmission.planned.latest) &
+        is.na(rcm$date.hqsubmission.actual) &
+        !grepl('with HQ|validated', rcm$status)
+          )
+}
+
 rcm_issue$with_hq_but_no_received_date<-function(rcm){which(status_with_hq(rcm) & is.na(rcm$date.hqsubmission.actual))}
 rcm_issue$with_field_but_not_received_date<-function(rcm){which(status_with_field(rcm) & is.na(rcm$date.hqsubmission.actual))}
 rcm_issue$data_unit_no_status<-function(rcm){which(rcm_is_data_unit_item(rcm) & !rcm_has_identified_status(rcm))}
 rcm_issue$passed_planned_not_recieved<-function(rcm){which(rcm_past_planned_submission(rcm) & !(grepl("hq|field|validated|cancelled",tolower(rcm$status))))}
 rcm_issue$duplicated_file_id<-function(rcm){which(duplicated(rcm$file.id))}
+rcm_issue$too_long_with_field<-function(rcm){
+
+
+
+}
+
 
 
 #' Identify research cycles that do not have data and analysis items

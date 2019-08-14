@@ -16,11 +16,21 @@ rcm_standardised_columns<-function(rcm){
   rcm$original.status<-rcm$Current.status
   rcm$Current.status<-tolower(rcm$Current.status)
   rcm$status<-rcm$Current.status
+  rcm$status[rcm$Current.status %>% grepl("hold",.)]<-"4 on hold"
+
+  rcm$status[rcm$Current.status %>% grepl("cancelled",.)]<-"5 cancelled"
+
   rcm$status[rcm$Current.status %>% grepl("validated|Validated",.)]<-"3 validated"
+
   rcm$status[rcm$Current.status %>% grepl("hq|HQ",.)]<-"2 with HQ"
+
   rcm$status[rcm$Current.status %>% grepl("not received",.)]<-"1 not received"
+  rcm$status[rcm$Current.status == ""]<-"1 not received"
+
   rcm$status[rcm$Current.status %>% grepl("partner",.)]<-"with partner"
+
   rcm$status[rcm$Current.status %>% grepl("field",.)]<-"with field"
+
   rcm$Archived[!(rcm$Archived %>% tolower %>% grepl("y",.))]<-"FALSE"
   rcm$Archived[rcm$Archived %>% tolower %>% grepl("y",.)]<-"TRUE"
 
@@ -43,6 +53,9 @@ rcm_standardised_columns<-function(rcm){
   rcm$File.type[grepl("deletion",rcm$File.type)]<-"data deletion report"
 
   rcm$id<-paste0(rcm$Research.Cycle.ID,":::",rcm$File.type,":::",rcm$File.ID_Name)
+
+  rcm$project.code<-rcm$Project.Code
+  rcm$rc.title <-rcm$Research.Cycle.Title
 
   # rcm %>% rename(date.endcollection.planned = Data.Collection...Planned.date.of.completion,
   #                date.endcollection.actual = Data.collection...Actual.date.of.completion,
@@ -80,7 +93,9 @@ rcm_standardised_columns<-function(rcm){
                  file.id = {rcm_renaming_findname("File.ID_Name")},
                  type={rcm_renaming_findname("File.type")},
                  archived={rcm_renaming_findname("Archived")},
-                 comment={rcm_renaming_findname("Comments")}
+                 comment={rcm_renaming_findname("Comments")},
+                 project.code = project.code,
+                 rc.title = rc.title
 
   ) -> rcm
   names(rcm)<-tolower(names(rcm))

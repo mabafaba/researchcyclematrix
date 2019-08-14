@@ -41,7 +41,7 @@ countries<-c(names(rcm_cl),names(delayed_cl),names(inconsistencies_cl)) %>% uniq
 
 ```
 
-```{r,results='asis', warning = F}
+```{r,results='asis', warning = FALSE, message=FALSE}
 cat("# SUMMARY\n\n")
 
 cat("validated in the last two weeks: <b>",nrow(recently_validated),"</b><br>")
@@ -53,6 +53,9 @@ cat("delayed:<b>",nrow(delayed),"</b><br>")
 cat("matrix inconsistencies:<b>",nrow(inconsistencies),"</b><br>")
 
 cat("\n\n### How long did validations take?\n\n")
+
+
+researchcyclematrix:::rcm_plot_validation_duration(rcm[Sys.Date()-lubridate::dmy(rcm$date.validated)<100,],unit = 'data')+scale_x_continuous(limits = c(0,80))+ggtitle('Submission to validation (Last 100 days)')+xlab('# Days')
 
 
 ggplot(recently_validated)+geom_point(

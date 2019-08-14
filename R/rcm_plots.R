@@ -1,4 +1,23 @@
 
+rcm_plot_validation_duration<-function(rcm, unit = '.'){
+  selected_unit<-unit
+  rcm <- rcm %>% filter(grepl(selected_unit,unit))
+
+
+  rcm$days_to_validation <- lubridate::dmy(rcm$date.validated)-rcm$date.hqsubmission.actual
+  rcm<-rcm %>% filter(!is.na(days_to_validation))
+  rcm$days_to_validation <- rcm$days_to_validation %>% as.numeric
+
+  ggplot(rcm %>% arrange(unit,type))+
+    geom_density(aes(days_to_validation,fill=type),
+                 color = NA,
+                 position = 'stack')+
+    facet_grid(rows=vars(unit))+theme_minimal()+
+    scale_x_log10()
+
+  }
+
+
 #' Colours for standard item stati
 #' @return vector with six colour hexcodes
 rcm_status_cols<-function(){
