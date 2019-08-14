@@ -4,4 +4,5 @@
 * updated rcm checks:
   - removed less relevant checks (i.e. hq/field status but no received date)
   - delays based on status not based on missing received date
-  
+* easy prefilling the monthly tracker with rcm_prefill_research_tracker()
+* not exported but already working to directly put together the whole tracker package with folders etc.: researchcyclematrix:::rcm_prefill_research_tracker_zip
