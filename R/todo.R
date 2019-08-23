@@ -26,7 +26,7 @@ todo_create<-function(rcm,subs,who="."){
   rcm<-rcm[grepl(who,rcm$hq_focal_point),]
   rcm<-rcm[!is.na(rcm$file.id),]
 
-  todo<-rcm %>% dplyr::arrange(status,desc(submitter_emergency),in.country.deadline,date.hqsubmission.actual)
+  todo<-rcm %>% dplyr::arrange(status,desc(submitter_emergency),date.hqsubmission.actual,in.country.deadline)
   class(todo)<-c("todo",class(todo))
   message(paste0("unrecognised items (new file id): ", nrow(subs[subs$new.file.id,])))
   invisible(todo)
