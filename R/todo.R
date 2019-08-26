@@ -22,16 +22,20 @@ todo_create<-function(rcm,subs,who="."){
 
   rcm$hq_focal_point<-hq_focal_point(rcm$rcid)
   rcm$hq_focal_point[rcm$unit!="data"]<-NA
-  rcm<-rcm[grepl("with HQ|delayed",rcm$status),]
+  rcm<-rcm[grepl("with HQ|delayed|with Field",rcm$status,ignore.case = T),]
   rcm<-rcm[grepl(who,rcm$hq_focal_point),]
   rcm<-rcm[!is.na(rcm$file.id),]
   rcm$submitter_emergency[is.na(rcm$submitter_emergency)]<-FALSE
-  todo<-rcm %>% dplyr::arrange(status,desc(submitter_emergency),date.hqsubmission.actual)
+  todo <- rcm %>% todo_sort_by_priority
   class(todo)<-c("todo",class(todo))
   message(paste0("unrecognised items (new file id): ", nrow(subs[subs$new.file.id,])))
   invisible(todo)
   }
 
+
+todo_sort_by_priority<-function(todo){
+  todo<-todo %>% dplyr::arrange(gsub("with field","2 with HQ", status,ignore.case = T),desc(submitter_emergency),date.hqsubmission.actual)
+}
 #' show next on todo list
 #' @param todo 'todo' list element (mix of rcm and subs; created with todo_download() )
 #' @param n number of items to show
@@ -40,7 +44,7 @@ todo_create<-function(rcm,subs,who="."){
 #' @export
 todo_next<-function(todo,n=nrow(todo)){
 
-  todo <- todo %>% dplyr::arrange(status)
+todo<-todo_sort_by_priority(todo)
 
   if(nrow(todo)==0){
     message((crayon::green(logo())))
@@ -59,7 +63,8 @@ todo_next<-function(todo,n=nrow(todo)){
 
     days_since_submission<-Sys.Date()-todorow[1,"date.hqsubmission.actual"]
 
-    deadline_passed<-days_until_deadline<0
+    deadline_passed <- days_until_deadline < 0
+
     if(todorow["status"]=="delayed"){
       cat(paste((crayon::silver(todorow["rcid"])),
                     crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))," "))
@@ -73,11 +78,15 @@ todo_next<-function(todo,n=nrow(todo)){
 
       return(invisible(NULL))
     }
+
+
+
     if(is.na(days_until_deadline)){days_until_deadline<-"(?)"}
     if(is.na(deadline_passed)) deadline_passed<-FALSE
 
     message(paste((crayon::silver(todorow["rcid"])),
                   crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))))
+    if(grepl("with field", tolower(todorow[1,"status"]))){message(crayon::blue('WITH FIELD'))}
     if(!is.na(todorow[1,"submitter_emergency"])){if(todorow[1,"submitter_emergency"]){message(red(blurred("EMERGENCY")))}}
     if(deadline_passed){message(red("deadline passed"))}
     message(regular_style(paste0(bold(days_since_submission)," Days since submission")))

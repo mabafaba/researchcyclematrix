@@ -1,6 +1,11 @@
-# researchcyclematrix 0.2.0
 
-# researchcyclematrix 0.1.1
+# V 0.2.1
+
+* New Features
+** listing items with field when printing todo (treated exactly like with HQ for now as we currently don't record to field dates or returns)
+* Changes
+* Bugs
+# V 0.2.0
 
 * New Features
 ** Added a `NEWS.md` file to track changes to the package.
