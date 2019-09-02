@@ -40,12 +40,13 @@ rcm_standardised_columns<-function(rcm){
       rcm[,i]<-as.character(rcm[,i])
     }
   }
+  original_filetype<-tolower(rcm$File.type)
   rcm$File.type <-tolower(rcm$File.type)
   rcm$File.type[grepl("terms|tor",rcm$File.type)]<-"ToR"
   rcm$File.type[grepl("data",rcm$File.type) & grepl("analysis",rcm$File.type)]<-"data & analysis"
   rcm$File.type[grepl("data",rcm$File.type) & (rcm$File.type!="data & analysis")]<-"data"
   rcm$File.type[grepl("analysis",rcm$File.type) & (rcm$File.type!="data & analysis")]<-"analysis"
-  rcm$File.type[grepl("analysis plan",rcm$File.type)]<-"analysis plan"
+  rcm$File.type[grepl("analysis plan",original_filetype,ignore.case = T)]<-"analysis plan"
 
   rcm$File.type[grepl("map",rcm$File.type)]<-"map"
   rcm$File.type[grepl("m\\&e",rcm$File.type)]<-"M&E"

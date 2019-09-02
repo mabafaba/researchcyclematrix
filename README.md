@@ -1,3 +1,8 @@
+<!-- badges: start -->
+  [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/mabafaba/researchcyclematrix?branch=master&svg=true)](https://ci.appveyor.com/project/mabafaba/researchcyclematrix)
+  <!-- badges: end -->
+  
+  
 # researchcyclematrix
 managing the research cycle matrix
 

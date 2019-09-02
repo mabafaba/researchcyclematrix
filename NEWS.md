@@ -1,6 +1,14 @@
 # researchcyclematrix (development version)
 
 
+# V 0.2.2
+
+* New Features
+** auto allocation table with `reserachcyclematrix:::rcm_allocation_table()` (testing phase, not exported)
+* Fixes
+** better unit matching for "data analysis plan"s
+** more consistent filtering of todo by data unit
+
 # V 0.2.1
 
 * New Features

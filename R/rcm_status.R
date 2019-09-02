@@ -89,7 +89,7 @@ rcm_has_identified_status<-function(rcm){
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return logical vector
 rcm_is_data_unit_item<-function(rcm){
-  rcm$type %in% c("data","analysis","data & analysis", "data deletion report")
+  rcm$type %in% c("data","analysis","data & analysis", "data deletion report", "DDR")
 }
 
 #' do RCM rows belong to the reporting unit?
@@ -103,7 +103,7 @@ rcm_is_reporting_unit_item<-function(rcm){
 #' @param rcm the research cycle matrix from rcm_download(raw=F)
 #' @return logical vector
 rcm_is_design_unit_item<-function(rcm){
-  rcm$type %in% c("ll matrix","M&E","concept note","methodology note","sampling frame","ToR")
+  rcm$type %in% c("ll matrix","M&E","concept note","methodology note","sampling frame","ToR", "analysis plan")
 }
 
 #' do RCM rows belong to the GIS unit?

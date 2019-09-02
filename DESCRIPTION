@@ -13,7 +13,6 @@ Suggests:
     testthat,
     xlsx
 Depends: 
-    dplyr,
     knitr,
     ggplot2,
     googlesheets,
@@ -22,7 +21,9 @@ Depends:
     crayon,
     utils,
     tidyr,
-    tibble
+    tibble,
+    dplyr,
+    ggthemes
 RoxygenNote: 6.1.1
 Imports: 
     lubridate,
