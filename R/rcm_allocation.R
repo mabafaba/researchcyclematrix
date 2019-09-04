@@ -64,5 +64,5 @@ rcm_allocation_table<-function(who=".",rcm=NULL,rcm_raw = NULL,include.file.ids 
 filter_validated_in_month<-function(rcm,month,year = 2019){
   rcm %>% filter(
     grepl('validated',status),
-    month(dmy(rcm$date.validated))==month & year(dmy(rcm$date.validated))==year)
+    lubridate::month(lubridate::dmy(rcm$date.validated))==month & lubridate::year(lubridate::dmy(rcm$date.validated))==year)
 }
