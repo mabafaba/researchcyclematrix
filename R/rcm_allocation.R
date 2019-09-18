@@ -7,6 +7,7 @@
 #' @param file.id the file id
 #' @param hours the number of hours worked on the file id
 #' @return the file id
+#' @export
 rcm_set_hours_worked <- function (file.id,hours){
   if(!is.na(hours)){
   if(assertthat::is.number(hours))

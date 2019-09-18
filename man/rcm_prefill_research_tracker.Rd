@@ -5,7 +5,8 @@
 \title{create a prefilled monthly RC tracker xlsx file}
 \usage{
 rcm_prefill_research_tracker(output_xlsx_file_name = paste0("tracker_",
-  Sys.Date()), rcm = NULL)
+  Sys.Date(), ".xlsx"), rcm = NULL, by_country = FALSE,
+  use_xlsx_package = TRUE)
 }
 \arguments{
 \item{output_xlsx_file_name}{the path to the newly created file}
@@ -21,5 +22,5 @@ create a prefilled monthly RC tracker xlsx file
 \details{
 only creates an xslx template file if the _xlsx package is installed_.
 In any case this function will return (invisibly) a data.frame with the rows that need to be put in the tracker.
-if you want an xlsx template file to be created, you need to install.packages("xlsx"). Careful you must have compatible R and Java versions for this to work (both 32 or both 64 bit)
+if you want an xlsx template file to be created, you need to install.packages("xlsx "). Careful you must have compatible R and Java versions for this to work (both 32 or both 64 bit)
 }

@@ -6,7 +6,7 @@
 \usage{
 rcm_download(include_archived = F, include_validated = F,
   after_year = "2015", main_columns_only = T, fill.dates = T,
-  remove_empty = T, gdrive_links = T, raw = F)
+  remove_empty = T, gdrive_links = F, raw = F)
 }
 \arguments{
 \item{include_archived}{logical: should archived entries be included?}

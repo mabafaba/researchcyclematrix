@@ -73,12 +73,8 @@ todo<-todo_sort_by_priority(todo)
       cat((paste0(paste0(crayon::red(paste(Sys.Date() - todorow[1,"date.hqsubmission.planned.latest"],"days delayed")),
                          "\n\n",
                          collapse="\n"))))
-    if(!(todorow["comment"] %in% c(NA,""," "))){
-      regular_style(todorow["comment"])
-    }
 
-      return(invisible(NULL))
-    }
+    }else{
 
 
 
@@ -92,9 +88,19 @@ todo<-todo_sort_by_priority(todo)
     if(deadline_passed){message(red("deadline passed"))}
     message(regular_style(paste0(bold(days_since_submission)," Days since submission")))
     message(regular_style(paste0(bold(days_until_deadline)," Days "," before deadline")))
+    # message("\n")
+    }
+
+    if(!(todorow["comment"] %in% c(NA,""," "))){
+      message(crayon::silver(todorow["comment"]))
+    }
     message("\n")
+
     return(invisible(NULL))
   }
+
+
+
   for(i in n:1){
     showone(todo[i,])
   }
