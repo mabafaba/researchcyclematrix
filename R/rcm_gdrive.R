@@ -11,7 +11,7 @@
 #' @param raw logical: if TRUE ignores all other parameters and returns the raw download (default FALSE)
 #' @return a data frame with the research cycle matrix
 #' @export
-rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",main_columns_only=T,fill.dates=T,remove_empty=T,gdrive_links=F,raw=F){
+rcm_download <- function(include_archived=F,include_validated=F,after_year="2015",main_columns_only=T,fill.dates=T,remove_empty=T,gdrive_links=F,raw=F){
   print("downloading rcm...")
   rcm<-read.csv("https://docs.google.com/spreadsheets/d/1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk/gviz/tq?tqx=out:csv&sheet=RC_Matrix_2.1",
                 stringsAsFactors = F)
@@ -46,7 +46,7 @@ rcm_download<-function(include_archived=F,include_validated=F,after_year="2015",
                  "date.endcollection.planned","date.endcollection.actual",
                  "date.hqsubmission.planned.first","date.hqsubmission.planned.latest", "date.hqsubmission.actual",
                  "date.feedback","date.validated","date.milestone",
-                 "status","archived","unit","comment","rc.title","project.code")
+                 "status","archived","unit","comment","rc.title","project.code","hq.fp")
     if(gdrive_links){main_cols<-c(main_cols,"link")}
     rcm<-rcm[,main_cols]
   }

@@ -20,8 +20,10 @@ todo_create<-function(rcm,subs,who="."){
   rcm$in.country.deadline<-subs$in.country.deadline[rcm_rows_from_subs]
   rcm<-rbind(rcm, delayed)
 
-  rcm$hq_focal_point<-hq_focal_point(rcm$rcid)
-  rcm$hq_focal_point[rcm$unit!="data"]<-NA
+  rcm$hq_focal_point <- rcm$hq.fp
+  suggest_fp <-  rcm_is_data_unit_item(rcm) & (is.na(rcm$hq_focal_point) | rcm$hq_focal_point==""| rcm$hq_focal_point==" ")
+  rcm$hq_focal_point[suggest_fp] <- hq_focal_point(rcm$rcid[suggest_fp])
+
   rcm<-rcm[grepl("with HQ|delayed|with Field",rcm$status,ignore.case = T),]
   rcm<-rcm[grepl(who,rcm$hq_focal_point),]
   rcm<-rcm[!is.na(rcm$file.id),]
@@ -81,8 +83,18 @@ todo<-todo_sort_by_priority(todo)
     if(is.na(days_until_deadline)){days_until_deadline<-"?"}
     if(is.na(deadline_passed)) deadline_passed<-FALSE
 
+    hq.fp_text <- todorow["hq.fp"]
+
+    if(is.na(hq.fp_text) | hq.fp_text==""){
+      hq.fp_text<-""
+    }else{
+      hq.fp_text<-paste0("[",hq.fp_text,"]")
+    }
+
     message(paste((crayon::silver(todorow["rcid"])),
-                  crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))))
+                  crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"]))), crayon::silver(hq.fp_text)))
+
+
     if(grepl("with field", tolower(todorow[1,"status"]))){
 
       message(crayon::blue('WITH FIELD'))

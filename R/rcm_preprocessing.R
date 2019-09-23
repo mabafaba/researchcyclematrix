@@ -96,7 +96,8 @@ rcm_standardised_columns<-function(rcm){
                  archived={rcm_renaming_findname("Archived")},
                  comment={rcm_renaming_findname("Comments")},
                  project.code = project.code,
-                 rc.title = rc.title
+                 rc.title = rc.title,
+                 hq.fp = {rcm_renaming_findname("Validation.Focal.Point")}
 
   ) -> rcm
   names(rcm)<-tolower(names(rcm))
