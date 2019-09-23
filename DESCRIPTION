@@ -31,5 +31,6 @@ Imports:
     jsonlite,
     rmarkdown,
     purrr,
-    zip
+    zip,
+    stringr
 VignetteBuilder: knitr

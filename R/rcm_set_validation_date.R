@@ -59,5 +59,3 @@ rcm_set_withHQ_date<-function(file.id,date=as.POSIXct(Sys.Date())){
 }
 
 
-
-

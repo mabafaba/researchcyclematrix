@@ -127,12 +127,18 @@ rcm_gdrive_links<-function(rcm){
 
 #' set an item's status to "with HQ" on google drive
 #' @param file.id the items file id name as a string
+#' @param fp the name of the focal point at HQ handling the item (always overwrites)
 #' @export
-rcm_set_to_withHQ<-function (file.id)
+rcm_set_to_withHQ<-function (file.id, fp, date = NULL)
 {
   message(paste0("setting to 'with HQ': ",file.id))
   rcm_change_value(file.id, column = "V", value = "with HQ (api_state)")
+  if(is.null(date)){
+    rcm_set_withHQ_date(file.id)}else{
+      rcm_set_withHQ_date(file.id,date)
+    }
 
+  rcm_set_HQ_focal_point(file.id = file.id, name = fp)
 }
 
 
@@ -140,12 +146,21 @@ rcm_set_to_withHQ<-function (file.id)
 
 #' set an item's status to "with Field" on google drive
 #' @param file.id the items file id name as a string
+#' @param comment (optional) add a comment
+#' @param fp the name of the focal point at HQ handling the item (always overwrites)
 #' @export
-rcm_set_to_withField<-function (file.id)
+rcm_set_to_withField<-function (file.id ,comment = NULL, fp)
 {
   message(paste0("setting to 'with Field': ",file.id))
   rcm_change_value(file.id, column = "V", value = "with Field (api_state)")
+  rcm_set_withfield_date(file.id)
+  rcm_set_HQ_focal_point(file.id = file.id, name = fp)
+
+  if(!is.null(comment)){
+    rcm_comment(file.id,comment)
+  }
 }
+
 
 
 
@@ -154,8 +169,11 @@ rcm_set_to_withField<-function (file.id)
 #' set an item's status to "validated" on google drive
 #' @param file.id the items file id name as a string
 #' @param hours_worked time spent on the validation in hours; must be numeric or NA
+#' @param comment (optional) add a comment
+#' @param DDR.received logical; did we receive the data deletion report? defaults to FALSE
+#' @param fp the name of the focal point at HQ handling the item (always overwrites)
 #' @export
-rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALSE){
+rcm_set_to_validated<-function(file.id,hours_worked,comment=NULL, DDR.received = FALSE,fp){
   if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
   if(DDR.received != TRUE & DDR.received != FALSE ){stop("invalid value for DDR.received. Should be TRUE or FALSE.")  }
   message(paste0("setting to 'validated': ",file.id))
@@ -175,6 +193,8 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment, DDR.received = FALS
 
   rcm_set_validation_date(file.id)
   rcm_set_hours_worked(file.id,hours_worked)
+  rcm_set_HQ_focal_point(file.id = file.id, name = fp)
+
   rcm_comment(file.id,comment,overwrite = T)
 
 }
@@ -298,6 +318,22 @@ assertthat::assert_that(assertthat::is.string(comment))
 
 
 
+
+#' set the name of the person handling the item at HQ in the gdrive RCM
+#' @param file.id the file id of the item to change
+#' @param name the name of the person as a character string.
+#' @return returns nothing important
+rcm_set_HQ_focal_point<-function(file.id,name=NULL){
+
+  if(is.null(file.id) | is.null(name)){stop("inputs can't be NULL")}
+
+  name_text <- stringr::str_to_title(name)
+  if(length(name_text)!=1){stop("name must be a single character value")}
+
+  rcm_change_value(file.id,column = "AI",value = name_text)
+
+
+}
 
 
 
