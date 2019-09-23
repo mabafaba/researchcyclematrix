@@ -43,7 +43,7 @@ todo_sort_by_priority<-function(todo){
 #' @details will print the highest priority item last
 #' @return the todo item (silently)
 #' @export
-todo_next<-function(todo,n=nrow(todo)){
+todo_next <- function(todo,n=nrow(todo)){
 
 todo<-todo_sort_by_priority(todo)
 
@@ -78,12 +78,26 @@ todo<-todo_sort_by_priority(todo)
 
 
 
-    if(is.na(days_until_deadline)){days_until_deadline<-"(?)"}
+    if(is.na(days_until_deadline)){days_until_deadline<-"?"}
     if(is.na(deadline_passed)) deadline_passed<-FALSE
 
     message(paste((crayon::silver(todorow["rcid"])),
                   crayon::bgBlack(crayon::white(crayon::bold(todorow["file.id"])))))
-    if(grepl("with field", tolower(todorow[1,"status"]))){message(crayon::blue('WITH FIELD'))}
+    if(grepl("with field", tolower(todorow[1,"status"]))){
+
+      message(crayon::blue('WITH FIELD'))
+
+      days_with_field<- lubridate::dmy(todorow['date.feedback'])
+      if(!is.na(days_with_field)){
+        days_with_field <- Sys.Date() - days_with_field
+      }
+      if(is.na(days_with_field)){
+        days_with_field<-"?"
+      }
+      message(regular_style(paste0(bold(days_with_field)," Days with Field")))
+
+
+      }
     if(!is.na(todorow[1,"submitter_emergency"])){if(todorow[1,"submitter_emergency"]){message(red(blurred("EMERGENCY")))}}
     if(deadline_passed){message(red("deadline passed"))}
     message(regular_style(paste0(bold(days_since_submission)," Days since submission")))
