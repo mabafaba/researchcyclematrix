@@ -1,4 +1,11 @@
 
+
+# V 0.2.2
+
+* New Features
+** adds 'feedback given' date when setting to with field
+** adds HQ focal point name when changing validation status 
+
 # V 0.2.2
 
 * New Features
