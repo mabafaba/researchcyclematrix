@@ -1,17 +1,26 @@
-#' Map results to an output template
-#'
+#' this is the backend behind rcm_dashboard; it prepares some data and adds them to an environment in which then ./inst/country_status.Rmd is executed
+#' @param rcm the researchcyclematrix; should contain validated items too
+#' @param delayed output from researchcyclematrix::todo_delayed()
+#' @param inconsistencies output from rcm_check()
+#' @param path the path to save the html file to
+#' @param filename the name of the output html file (must end in '.html')
 country_status_markdown <- function(rcm,delayed,inconsistencies, path="./", filename="country_overview.html") {
 
+  # find the complete path to the Rmd file stored inside the package (in /inst)
     template <-
       system.file("md_templates",
                   "country_status.Rmd",
                   package = "researchcyclematrix")
 
+  # create a new environment
   render_environment <- new.env()
 
+  # add inputs to the environment
   render_environment$rcm <- rcm
   render_environment$inconsistencies <- inconsistencies
   render_environment$delayed <- delayed
+
+  #render rmarkdown to HTML inside that enviornment
   rmarkdown::render(
     template,
     output_file = filename,
@@ -21,11 +30,14 @@ country_status_markdown <- function(rcm,delayed,inconsistencies, path="./", file
     knit_root_dir = getwd()
   )
 
+  # put together target file path
   full_path<-path %>% gsub("/$","",.) %>% gsub("^/","",.)
   full_path<-paste0(getwd(),full_path)
   message("document written to:")
   message(full_path)
+  # open page
   browseURL(paste0(full_path,"/",filename))
+  # return the path but don't print it
   invisible(full_path)
 
 }

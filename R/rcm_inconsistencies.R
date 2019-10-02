@@ -7,6 +7,9 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
   if(!check.archived){rcm<-rcm[rcm$archived!=T,]}
   if(!check.validated){rcm<-rcm[!grepl("validated",rcm$status),]}
 
+
+  # there's a list of functions called "rcm_issue"; here it just applies those functions and adds a name to the issue.
+  # it's a weird setup but i thought it's good to have all checks listed in one place
   issues<-rbind(
     rcm_find_issue(rcm,rcm_issue$passed_planned_not_recieved, issue_name = "planned submission passed but not received"),
     rcm_find_issue(rcm,rcm_issue$dates_missing, issue_name = "none of the hq submission dates (planned/received) available"),
@@ -17,24 +20,22 @@ rcm_check<-function(rcm,check.archived=F,check.validated=F){
     rcm_find_issue(rcm,rcm_issue$too_long_with_field, issue_name = "with field longer than expected")
   )
 
-  # issues_data_unit_no_status<-data.frame(id=which(is.na(rcm$date.hqsubmission.planned.latest) &
-  #                                                   is.na(rcm$date.hqsubmission.planned.first) &
-  #                                                   is.na(rcm$date.hqsubmission.actual)),
-  #                                        issue = "no planned/received date for")
 
+  # add some data from the rcm
   issues$issue<-as.factor(issues$issue)
   issues$rcid<-rcm$rcid[issues$id]
 
-  # issues$file.id<-rcm$file.id[issues$id]
   issues$`file id`<-rcm$file.id[issues$id]
   issues$comment<-rcm$comment[issues$id]
   issues$status<-rcm$status[issues$id]
-  if(nrow(issues)>0){
-    message(paste(nrow(issues),"inconsistencies in RCM:"))
-    print(knitr::kable(list(issues$issue,rcm_unit(rcm[issues$id,])) %>% table))}else{
-      message("no inconsistencies in RCM detected.")
-    }
   issues$unit<-rcm$unit[issues$id]
+  # could print an overview of issues found; turned out to be too verbose, you can always table(x$issue)
+  # if(nrow(issues)>0){
+  #   message(paste(nrow(issues),"inconsistencies in RCM:"))
+  #   print(knitr::kable(list(issues$issue,rcm_unit(rcm[issues$id,])) %>% table))}else{
+  #     message("no inconsistencies in RCM detected.")
+  #   }
+
   issues
 }
 

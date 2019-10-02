@@ -1,70 +1,8 @@
 
-#' download the research cycle matrix
-#'
-#' @param include_archived logical: should archived entries be included?
-#' @param include_validated logical: should validated entries be included?
-#' @param after_year excludes all entries from before the given year (defaults to 2015)
-#' @param main_columns_only logical include only most important columns?
-#' @param fill.dates logical: should dates be filled from other dates? e.g. "first planned date" copyed to "latest planned date" where that is missing
-#' @param remove_empty logical: should empty rows be removed (default TRUE)
-#' @param gdrive_links logical: should a column with links to the google drive row be added?
-#' @param raw logical: if TRUE ignores all other parameters and returns the raw download (default FALSE)
-#' @return a data frame with the research cycle matrix
-#' @export
-rcm_download <- function(include_archived=F,include_validated=F,after_year="2015",main_columns_only=T,fill.dates=T,remove_empty=T,gdrive_links=F,raw=F){
-  print("downloading rcm...")
-  rcm<-read.csv("https://docs.google.com/spreadsheets/d/1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk/gviz/tq?tqx=out:csv&sheet=RC_Matrix_2.1",
-                stringsAsFactors = F)
-
-  x<-rcm[1,]
-  if(remove_empty){rcm<-rcm[apply(rcm,1,function(x){
-    x<-x[-which(names(x)=="index")];!all(is.na(x)|x=="")}),]
-  }
-  if(raw){
-    message("RCM requested in raw format. ignoring all other parameters.")
-    return(rcm)}
-  dateformat<-"%d-%b-%y"
-  datecols<-grep("[^[:alnum:] ]Date|[^[:alnum:] ]date|File.submission.to.HQ",names(rcm),value=T)
-
-  for(i in datecols){
-    rcm[,i] <- as.Date(as.character(rcm[,i]),format=dateformat)
-  }
-
-  after_year<-as.Date(paste0(after_year,"2014-12-31"),format="%Y-%m-%d")
-  too_early_entries<-apply(rcm[,datecols],2,function(x){x<after_year}) %>% apply(1,any,na.rm =T)
-  rcm<-rcm[!too_early_entries,,drop=F]
 
 
-  rcm <- rcm_standardised_columns(rcm)
-  if(fill.dates){
-    rcm <- rcm_fill_dates(rcm)
-  }
 
-  if(gdrive_links){rcm$link<-rcm_gdrive_links(rcm)}
-  if(main_columns_only){
-    main_cols<-c("rcid","round","file.id","type",
-                 "date.endcollection.planned","date.endcollection.actual",
-                 "date.hqsubmission.planned.first","date.hqsubmission.planned.latest", "date.hqsubmission.actual",
-                 "date.feedback","date.validated","date.milestone",
-                 "status","archived","unit","comment","rc.title","project.code","hq.fp")
-    if(gdrive_links){main_cols<-c(main_cols,"link")}
-    rcm<-rcm[,main_cols]
-  }
-
-  if(!include_archived){
-    rcm<-rcm[!rcm$archived,]
-  }
-  if(!include_validated){
-    rcm<-rcm[!grepl("validated",rcm$status),]
-  }
-
-
-  rcm
-
-}
-
-
-#' get link to google drive row for file.id
+#' get link to google drive row for a file.id
 #'
 gdrive_hyperlink_row<-function(file.id){
   # if(length(file.id)>1){warning("can only link to 1 gdrive row at a time. Using first.")}
@@ -199,92 +137,28 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment=NULL, DDR.received =
 
 }
 
-#' add a value on google drive based on the file.id
-rcm_add_value<-function(file.id,column,value){
-  if(is.numeric(column)){
-    if(column>26){stop('only columns <26 can be addressed with numeric index')}
-    column<-LETTERS[column]
-  }
-  row<-get_gdrive_row(file.id)
-  value_in_cell <- get_gdrive_relatedFiles(file.id)
-  print(file.id)
-  print(row)
-  print(value_in_cell)
-  new_value <- paste(value_in_cell, value, sep=" / ")
-  g_sheets_put(row,column,new_value,spreadsheetId = "1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk")
-}
 
-#' change a value on google drive based on the file.id
-rcm_change_value<-function(file.id,column,value){
-  if(is.numeric(column)){
-    if(column>26){stop('only columns <26 can be addressed with numeric index')}
-    column<-LETTERS[column]
-  }
-  row<-get_gdrive_row(file.id)
-  print(file.id)
-  print(row)
-  g_sheets_put(row,column,value,spreadsheetId = "1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk")
-}
+#' looking at this function now, it's something really insane. Thank god it's not in use anywhere. Keeping it here to prank the digital archeologists of the future
+#'
+#'
+#'
+#'  #' add a value on google drive based on the file.id
+#' rcm_add_value<-function(file.id,column,value){
+#'   if(is.numeric(column)){
+#'     if(column>26){stop('only columns <26 can be addressed with numeric index')}
+#'     column<-LETTERS[column]
+#'   }
+#'   row<-get_gdrive_row(file.id)
+#'   value_in_cell <- get_gdrive_relatedFiles(file.id)
+#'   # print(file.id)
+#'   # print(row)
+#'   # print(value_in_cell)
+#'   new_value <- paste(value_in_cell, value, sep=" / ")
+#'   g_sheets_put(row,column,new_value,spreadsheetId = "1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk")
+#' }
 
 
 
-#' wrapper for google sheets api to change single value
-g_sheets_put<-function(row,col,value,spreadsheetId="1Quu2P6z-uA2H64eQENWJkNIOGIfnsdXgKNg4qdiCvXc",...){
-  if(spreadsheetId!="1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk"){stop("g_sheets_put implemented only for one specific spreadsheet. for other spreadsheets would overwrite column AR")}
-  cell<-paste0(col,row)
-  thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",cell,"?valueInputOption=USER_ENTERED")
-  g_sheets_update_index()
-  server_response <- httr::PUT(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
-            body=paste0('{
-                        "values":[["',value,'"]]
-}')
-  )
-  if(server_response$status_code==200){cat(crayon::silver(paste("successfully changed values in google sheet:",col," / ",row)))}
-  if(server_response$status_code!=200){stop((paste0("\nfailed to modify google sheet\n",paste0(col,row),"\n","value:\n",value,"\n\n","status code: ",server_response$status_code)))}
-
-}
-
-#' wrapper for google sheets api to append a new row
-g_sheets_append_row<-function(value,spreadsheetId="1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8",...){
-  thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/","submissions!A1:E2:append","?valueInputOption=USER_ENTERED")
-  # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
-  httr::POST(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
-            body=
-
-# paste0('{
-#                         "values":[["',value,'"]]
-# }') %>% cat
-
-jsonlite::toJSON(list(values=t(as.matrix(value))))
-
-  )%>% print
-  # POST https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{range}:append
-  # https://sheets.googleapis.com/v4/spreadsheets/spreadsheetId/values/Sheet1!A1:E1:append?valueInputOption=USER_ENTERED
-  # https://docs.google.com/spreadsheets/d/1iNt__-uMMBTbLEsJkiIXglPJ4GK-9UCVqC7awhMTXF8/edit#gid=0
-}
-
-
-#' fills a column on google drive with incremental indices to ensure row matching works as expected
-g_sheets_update_index<-function(col="AR",spreadsheetId="1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk",...){
-  rows<-c(1,1000)
-
-  for(i in 1:7){
-    if(rows[2]>6770){rows[2]<-6770}
-    if(rows[1]>6001){break}
-    range<-paste0(paste0(paste0(col,rows[1]),":",paste0(col,rows[2])))
-    thisurl<-paste0("https://sheets.googleapis.com/v4/spreadsheets/",spreadsheetId,"/values/",range,"?valueInputOption=USER_ENTERED")
-
-    value='=IF(ROW()=1,\\"index\\",ROW())'
-    httr::PUT(thisurl,googlesheets:::google_token(),valueInputOption="RAW",
-              body=paste0('{
-                          "values":[',paste0(paste0('["',rep(value,rows[2]-rows[1]+1),'"]'),collapse=','),']
-  }')
-  )%>% print
-    rows<-rows+1000
-
-}
-
-}
 
 
 

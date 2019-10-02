@@ -99,7 +99,9 @@ rcm_update_from_subs<-function(subs,rcm){
   ids_to_update<-ids_to_update[!is.na(ids_to_update)]
   ids_to_update<-ids_to_update[ids_to_update!=""]
 
-  sapply(ids_to_update,rcm_set_to_withHQ)
+  hq_fps<-hq_focal_point(rcm$rcid[match(ids_to_update,rcm$file.id)])
+
+  purrr::map2(ids_to_update,hq_fps,rcm_set_to_withHQ)
   for(this_file.id in ids_to_update){
     this_file.id_date<-subs$submission.date[which(subs$file.id==this_file.id)[1]]
     this_file.id_date<-lubridate::dmy(this_file.id_date)
