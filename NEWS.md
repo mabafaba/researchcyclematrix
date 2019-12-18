@@ -3,7 +3,7 @@
 # V 0.2.2
 * Updates
 ** Match new RCM column order; all columns defined in one place (`/R/rcm_gdrive_column_letters.R`) 
-
+** Do not overwrite comment on validation
 # V 0.2.2
 
 * New Features
