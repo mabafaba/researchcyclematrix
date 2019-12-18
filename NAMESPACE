@@ -2,6 +2,7 @@
 
 S3method(print,todo)
 export("%>%")
+export(rcm_allocation_table)
 export(rcm_browse)
 export(rcm_check)
 export(rcm_check_csv)

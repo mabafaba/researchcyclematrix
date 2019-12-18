@@ -2,11 +2,22 @@
 % Please edit documentation in R/country_overview.R
 \name{country_status_markdown}
 \alias{country_status_markdown}
-\title{Map results to an output template}
+\title{this is the backend behind rcm_dashboard; it prepares some data and adds them to an environment in which then ./inst/country_status.Rmd is executed}
 \usage{
 country_status_markdown(rcm, delayed, inconsistencies, path = "./",
   filename = "country_overview.html")
 }
+\arguments{
+\item{rcm}{the researchcyclematrix; should contain validated items too}
+
+\item{delayed}{output from researchcyclematrix::todo_delayed()}
+
+\item{inconsistencies}{output from rcm_check()}
+
+\item{path}{the path to save the html file to}
+
+\item{filename}{the name of the output html file (must end in '.html')}
+}
 \description{
-Map results to an output template
+this is the backend behind rcm_dashboard; it prepares some data and adds them to an environment in which then ./inst/country_status.Rmd is executed
 }

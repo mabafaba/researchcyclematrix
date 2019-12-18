@@ -4,13 +4,19 @@
 \alias{rcm_set_to_validated}
 \title{set an item's status to "validated" on google drive}
 \usage{
-rcm_set_to_validated(file.id, hours_worked, comment,
-  DDR.received = FALSE)
+rcm_set_to_validated(file.id, hours_worked, comment = NULL,
+  DDR.received = FALSE, fp)
 }
 \arguments{
 \item{file.id}{the items file id name as a string}
 
 \item{hours_worked}{time spent on the validation in hours; must be numeric or NA}
+
+\item{comment}{(optional) add a comment}
+
+\item{DDR.received}{logical; did we receive the data deletion report? defaults to FALSE}
+
+\item{fp}{the name of the focal point at HQ handling the item (always overwrites)}
 }
 \description{
 set an item's status to "validated" on google drive

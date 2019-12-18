@@ -12,7 +12,7 @@ rcm_allocation_table(who = ".", rcm = NULL, rcm_raw = NULL,
 
 \item{rcm}{the research cycle matrix. leave empty to download fresh}
 
-\item{rcm_raw}{the raw research cycle matrix; get with rcm_download(raw = T) or levae empty to download fresh}
+\item{rcm_raw}{the raw research cycle matrix; get with rcm_download(raw = T) or levae empty to download fresh. Need this because "hours" worked column is not included in the cleaned up rcm download (maybe we should include it).}
 
 \item{include.file.ids}{vector of file ids that should be included even if they do not match the focal point pattern in "who" parameter}
 

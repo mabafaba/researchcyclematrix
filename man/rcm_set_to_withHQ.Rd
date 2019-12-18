@@ -4,10 +4,12 @@
 \alias{rcm_set_to_withHQ}
 \title{set an item's status to "with HQ" on google drive}
 \usage{
-rcm_set_to_withHQ(file.id)
+rcm_set_to_withHQ(file.id, fp, date = NULL)
 }
 \arguments{
 \item{file.id}{the items file id name as a string}
+
+\item{fp}{the name of the focal point at HQ handling the item (always overwrites)}
 }
 \description{
 set an item's status to "with HQ" on google drive

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rcm_gdrive.R
 \name{rcm_comment}
 \alias{rcm_comment}
-\title{change an items comment on google drive}
+\title{looking at this function now, it's something really insane. Thank god it's not in use anywhere. Keeping it here to prank the digital archeologists of the future}
 \usage{
 rcm_comment(file.id, comment, overwrite = F)
 }
@@ -14,5 +14,22 @@ rcm_comment(file.id, comment, overwrite = F)
 \item{overwrite}{if TRUE, will completely overwrite the current comment. Otherwise it will append the new comment to the existing one (with a date stamp)}
 }
 \description{
+looking at this function now, it's something really insane. Thank god it's not in use anywhere. Keeping it here to prank the digital archeologists of the future
+}
+\details{
+#' add a value on google drive based on the file.id
+rcm_add_value<-function(file.id,column,value){
+  if(is.numeric(column)){
+    if(column>26){stop('only columns <26 can be addressed with numeric index')}
+    column<-LETTERS[column]
+  }
+  row<-get_gdrive_row(file.id)
+  value_in_cell <- get_gdrive_relatedFiles(file.id)
+  # print(file.id)
+  # print(row)
+  # print(value_in_cell)
+  new_value <- paste(value_in_cell, value, sep=" / ")
+  g_sheets_put(row,column,new_value,spreadsheetId = "1wX5k3cETrCbnw4vpfY07eSzTyWX6AwmJmxJQwPahrSk")
+}
 change an items comment on google drive
 }

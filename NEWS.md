@@ -1,6 +1,10 @@
 
 
 # V 0.2.2
+* Updates
+** Match new RCM column order; all columns defined in one place (`/R/rcm_gdrive_column_letters.R`) 
+
+# V 0.2.2
 
 * New Features
 ** adds 'feedback given' date when setting to with field
