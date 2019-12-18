@@ -4,10 +4,14 @@
 \alias{rcm_set_to_withField}
 \title{set an item's status to "with Field" on google drive}
 \usage{
-rcm_set_to_withField(file.id)
+rcm_set_to_withField(file.id, comment = NULL, fp)
 }
 \arguments{
 \item{file.id}{the items file id name as a string}
+
+\item{comment}{(optional) add a comment}
+
+\item{fp}{the name of the focal point at HQ handling the item (always overwrites)}
 }
 \description{
 set an item's status to "with Field" on google drive

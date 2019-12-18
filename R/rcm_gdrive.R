@@ -1,7 +1,6 @@
 
 
 
-
 #' get link to google drive row for a file.id
 #'
 gdrive_hyperlink_row<-function(file.id){
@@ -70,7 +69,7 @@ rcm_gdrive_links<-function(rcm){
 rcm_set_to_withHQ<-function (file.id, fp, date = NULL)
 {
   message(paste0("setting to 'with HQ': ",file.id))
-  rcm_change_value(file.id, column = "V", value = "with HQ (api_state)")
+  rcm_change_value(file.id, column = rcm_gsheet_column_letters$status, value = "with HQ (api_state)")
   if(is.null(date)){
     rcm_set_withHQ_date(file.id)}else{
       rcm_set_withHQ_date(file.id,date)
@@ -90,7 +89,7 @@ rcm_set_to_withHQ<-function (file.id, fp, date = NULL)
 rcm_set_to_withField<-function (file.id ,comment = NULL, fp)
 {
   message(paste0("setting to 'with Field': ",file.id))
-  rcm_change_value(file.id, column = "V", value = "with Field (api_state)")
+  rcm_change_value(file.id, column = rcm_gsheet_column_letters$status, value = "with Field (api_state)")
   rcm_set_withfield_date(file.id)
   rcm_set_HQ_focal_point(file.id = file.id, name = fp)
 
@@ -115,16 +114,16 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment=NULL, DDR.received =
   if(!(is.numeric(hours_worked)|is.na(hours_worked))){stop("hours worked must be a number or NA")}
   if(DDR.received != TRUE & DDR.received != FALSE ){stop("invalid value for DDR.received. Should be TRUE or FALSE.")  }
   message(paste0("setting to 'validated': ",file.id))
-  rcm_change_value(file.id,column = "V",value = "validated (api_state)")
+  rcm_change_value(file.id,column = rcm_gsheet_column_letters$status,value = "validated (api_state)")
 
   #Data Deletion Report only for raws concerning dataset
   file.type <- get_gdrive_fileType(file.id)
   if( grepl("DATA", toupper(file.type)) == TRUE){
     if(DDR.received == TRUE){
-      rcm_change_value(file.id, column = "AM", value = "TRUE") # I is the column for related files
+      rcm_change_value(file.id, column = rcm_gheet_column_letters$ddr.received, value = "TRUE") # I is the column for related files
     }
     else{
-      rcm_change_value(file.id, column = "AM", value = "FALSE") # I is the column for related files
+      rcm_change_value(file.id, column = rcm_gheet_column_letters$ddr.received, value = "FALSE") # I is the column for related files
     }
   }
 
@@ -133,7 +132,7 @@ rcm_set_to_validated<-function(file.id,hours_worked,comment=NULL, DDR.received =
   rcm_set_hours_worked(file.id,hours_worked)
   rcm_set_HQ_focal_point(file.id = file.id, name = fp)
 
-  rcm_comment(file.id,comment,overwrite = T)
+  rcm_comment(file.id,comment,overwrite = F)
 
 }
 
@@ -182,7 +181,7 @@ assertthat::assert_that(assertthat::is.string(comment))
     current_comment <- paste0(current_comment,"\n")
   }
   comment<-paste0(current_comment,format(Sys.Date(),"%d-%b-%y"),": ",comment)
-  researchcyclematrix:::rcm_change_value(file.id,column = "J",value = comment)
+  researchcyclematrix:::rcm_change_value(file.id,column = rcm_gsheet_column_letters$comment,value = comment)
 }
 
 
@@ -204,7 +203,7 @@ rcm_set_HQ_focal_point<-function(file.id,name=NULL){
   name_text <- stringr::str_to_title(name)
   if(length(name_text)!=1){stop("name must be a single character value")}
 
-  rcm_change_value(file.id,column = "AI",value = name_text)
+  rcm_change_value(file.id,column = rcm_gsheet_column_letters$hq.fp,value = name_text)
 
 
 }

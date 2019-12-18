@@ -2,10 +2,10 @@
 % Please edit documentation in R/rcm_gdrive.R
 \name{gdrive_hyperlink_row}
 \alias{gdrive_hyperlink_row}
-\title{get link to google drive row for file.id}
+\title{get link to google drive row for a file.id}
 \usage{
 gdrive_hyperlink_row(file.id)
 }
 \description{
-get link to google drive row for file.id
+get link to google drive row for a file.id
 }
